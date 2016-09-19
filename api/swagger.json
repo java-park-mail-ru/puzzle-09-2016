@@ -1,0 +1,89 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "***Rainbow Square***",
+    "version": "1.0.0",
+    "title": "Rainbow Square backend API"
+  },
+  "host": "http://localhost:8080",
+  "basePath": "/api",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/user": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "description": "Register new user",
+        "parameters": [
+          {
+            "name": "login",
+            "description": "New user name",
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "description": "New user password",
+            "type": "password"
+          },
+          {
+            "name": "email",
+            "description": "New user email",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "login",
+            "schema": "#/definitions/SuccessResponse"
+          },
+          "400": {
+            "description": "Empty json object"
+          }
+        }
+      }
+    },
+    "/session": {
+      "post": {
+        "tags": [
+          "session"
+        ],
+        "description": "User auth",
+        "parameters": [
+          {
+            "name": "login",
+            "description": "Username",
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "description": "User password",
+            "type": "password"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "login",
+            "schema": "#/definitions/SuccessResponse"
+          },
+          "400": {
+            "description": "Empty json object"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SuccessResponse": {
+      "type": "object",
+      "properties": {
+        "login": {
+          "type": "string",
+          "description": "Username"
+        }
+      }
+    }
+  }
+}
