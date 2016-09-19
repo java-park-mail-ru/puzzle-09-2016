@@ -36,11 +36,10 @@
         ],
         "responses": {
           "200": {
-            "description": "login",
-            "schema": "#/definitions/SuccessResponse"
+            "description": "Successful operation"
           },
           "400": {
-            "description": "Empty json object"
+            "description": "Empty parameter or user already registered"
           }
         }
       }
@@ -65,23 +64,11 @@
         ],
         "responses": {
           "200": {
-            "description": "login",
-            "schema": "#/definitions/SuccessResponse"
+            "description": "Successful operation"
           },
           "400": {
-            "description": "Empty json object"
+            "description": "Empty parameter or invalid username/password"
           }
-        }
-      }
-    }
-  },
-  "definitions": {
-    "SuccessResponse": {
-      "type": "object",
-      "properties": {
-        "login": {
-          "type": "string",
-          "description": "Username"
         }
       }
     }
