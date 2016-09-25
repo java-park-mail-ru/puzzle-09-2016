@@ -7,6 +7,16 @@
   },
   "host": "http://localhost:8080",
   "basePath": "/api",
+  "tags": [
+    {
+      "name": "user",
+      "description": "Operations about user"
+    },
+    {
+      "name": "session",
+      "description": "Operations about session"
+    }
+  ],
   "schemes": [
     "http"
   ],
@@ -19,24 +29,19 @@
         "description": "Register new user",
         "parameters": [
           {
-            "name": "login",
-            "description": "New user name",
-            "type": "string"
-          },
-          {
-            "name": "password",
-            "description": "New user password",
-            "type": "password"
-          },
-          {
-            "name": "email",
-            "description": "New user email",
-            "type": "string"
+            "name": "body",
+            "description": "RegistrationRequest object containing user login, password and email",
+            "schema": {
+              "$ref": "#/definitions/RegistrationRequest"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Successful operation"
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
           },
           "400": {
             "description": "Empty parameter or user already registered"
@@ -49,26 +54,61 @@
         "tags": [
           "session"
         ],
-        "description": "User auth",
+        "description": "User authorization",
         "parameters": [
           {
-            "name": "login",
-            "description": "Username",
-            "type": "string"
-          },
-          {
-            "name": "password",
-            "description": "User password",
-            "type": "password"
+            "name": "body",
+            "description": "AuthRequest object containing user login and password",
+            "schema": {
+              "$ref": "#/definitions/AuthRequest"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Successful operation"
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
           },
           "400": {
             "description": "Empty parameter or invalid username/password"
           }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "RegistrationRequest": {
+      "type": "object",
+      "properties": {
+        "login": {
+          "type": "string"
+        },
+        "password": {
+          "type": "integer"
+        },
+        "email": {
+          "type": "integer"
+        }
+      }
+    },
+    "AuthRequest": {
+      "type": "object",
+      "properties": {
+        "login": {
+          "type": "string"
+        },
+        "password": {
+          "type": "integer"
+        }
+      }
+    },
+    "SuccessResponse": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "login": "integer"
         }
       }
     }
