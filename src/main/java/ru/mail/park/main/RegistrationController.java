@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.mail.park.model.UserProfile;
 import ru.mail.park.services.AccountService;
 
+import javax.servlet.http.HttpSession;
+
 @RestController
 public class RegistrationController {
     private final AccountService accountService;
@@ -22,11 +24,10 @@ public class RegistrationController {
         String login = body.getLogin();
         String password = body.getPassword();
         String email = body.getEmail();
-        System.out.println(login);
         if (StringUtils.isEmpty(login) || StringUtils.isEmpty(password) || StringUtils.isEmpty(email)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
-        if (accountService.getUser(login) != null) {
+        if (accountService.getUserByLogin(login) != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
         accountService.addUser(login, password, email);
@@ -34,19 +35,28 @@ public class RegistrationController {
     }
 
     @RequestMapping(path = "/api/session", method = RequestMethod.POST)
-    public ResponseEntity auth(@RequestBody AuthRequest body) {
+    public ResponseEntity auth(@RequestBody AuthRequest body, HttpSession httpSession) {
+        String httpSessionId = httpSession.getId();
+        UserProfile user = accountService.getUserBySessionId(httpSessionId);
+        if (user != null) {
+            return ResponseEntity.ok(new SuccessResponse(user.getLogin()));
+        }
         String login = body.getLogin();
         String password = body.getPassword();
         if (StringUtils.isEmpty(login) || StringUtils.isEmpty(password)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
-        UserProfile user = accountService.getUser(login);
-        if (user.getPassword().equals(password)) {
-            return ResponseEntity.ok(new SuccessResponse(login));
+        user = accountService.getUserByLogin(login);
+        if (user == null || !user.getPassword().equals(password)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+        if (!StringUtils.isEmpty(httpSessionId)) {
+            accountService.associateSessionIdWithUser(httpSession.getId(), user);
+        }
+        return ResponseEntity.ok(new SuccessResponse(login));
     }
 
+    @SuppressWarnings("unused")
     private static final class SuccessResponse {
         private String login;
 
@@ -54,7 +64,6 @@ public class RegistrationController {
             this.login = login;
         }
 
-        @SuppressWarnings("unused")
         public String getLogin() {
             return login;
         }
