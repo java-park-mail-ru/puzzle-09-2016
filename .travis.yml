@@ -1,0 +1,10 @@
+language: java
+jdk:
+- oraclejdk8
+deploy:
+  provider: heroku
+  api_key:
+    secure: lIFrtuJ+KWmug3YF0q4euTo9J3CklapHjb9XQgeHWKUHaadKF97VrHUY1A731PfpNzYF2Ba0zeWebJ5S2LiO2QL4VqkyCg6vqssU5hQEd98ZnJmvMqQU2K2TluR4Td9fwL9ZwiaqoIBjolGAWDQuIeBFLPpkwPp1Lj0izqUP6vn65Fmm3iAf70R1wAmHNV2+nuQ4le2GrrZYppQLBWjCanxT3sribWPszamgRGk9arESTOljztcq5NEtrZqiQ20SCeEYVpFuQAauLNspZoy+WyhfD3lFqPDuf+rDIsPYPCJh2DHcrawl6y2F2YDBCxgd/wwBhD+WWUfhE7pOnBUbI59wPMF7nrflrwZT5Kr+1m6jXFuFBIRjRJGUh81GF8jTv5Kl3q7IY5Dj9h+dTuePWCqCDjtQpQ5Y9GMboE39G+Iv3RB8jiSxSQiePeh9qNx/UINvRNW7nBox+4LpdX8gAynJ7FwAUV4MqincmHpvllAL1dD0rKjBdqWy/RuAkL6CcKkQbyE642X4xUuLviwu44EOEcqJIPG9qOBFtt2mqF2+1fQPRv8gSsiiLDVk4TbEEqCyXj+n8nAJJLy1RvNBnTHXK8espA41AZuUgFvwTnGWhYriv+hZKvK+GHxabaHlF5P2iJAYxJITxw2dUmSyKyk6vbkZJeoQdRz4aQKL/9g=
+  app: gentle-castle-68047
+  on:
+    repo: djkah11/puzzle-09-2016
