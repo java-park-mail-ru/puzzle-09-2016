@@ -86,10 +86,10 @@
           "type": "string"
         },
         "password": {
-          "type": "integer"
+          "type": "string"
         },
         "email": {
-          "type": "integer"
+          "type": "string"
         }
       }
     },
@@ -100,7 +100,7 @@
           "type": "string"
         },
         "password": {
-          "type": "integer"
+          "type": "string"
         }
       }
     },
