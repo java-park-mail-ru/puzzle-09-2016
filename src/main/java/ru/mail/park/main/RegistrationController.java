@@ -36,23 +36,23 @@ public class RegistrationController {
 
     @RequestMapping(path = "/api/session", method = RequestMethod.POST)
     public ResponseEntity auth(@RequestBody AuthRequest body, HttpSession httpSession) {
-        String httpSessionId = httpSession.getId();
-        UserProfile user = accountService.getUserBySessionId(httpSessionId);
-        if (user != null) {
-            return ResponseEntity.ok(new SuccessResponse(user.getLogin()));
+        Object httpSessionLogin = httpSession.getAttribute("login");
+        if (httpSessionLogin != null) {
+            UserProfile user = accountService.getUserByLogin(httpSessionLogin.toString());
+            if (user != null) {
+                return ResponseEntity.ok(new SuccessResponse(user.getLogin()));
+            }
         }
         String login = body.getLogin();
         String password = body.getPassword();
         if (StringUtils.isEmpty(login) || StringUtils.isEmpty(password)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
-        user = accountService.getUserByLogin(login);
+        UserProfile user = accountService.getUserByLogin(login);
         if (user == null || !user.getPassword().equals(password)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
-        if (!StringUtils.isEmpty(httpSessionId)) {
-            accountService.associateSessionIdWithUser(httpSession.getId(), user);
-        }
+        httpSession.setAttribute("login", login);
         return ResponseEntity.ok(new SuccessResponse(login));
     }
 
