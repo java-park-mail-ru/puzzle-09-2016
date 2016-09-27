@@ -10,6 +10,7 @@ import ru.mail.park.services.AccountService;
 
 import javax.servlet.http.HttpSession;
 
+@CrossOrigin
 @RestController
 public class RegistrationController {
     private final AccountService accountService;
