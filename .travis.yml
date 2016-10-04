@@ -1,0 +1,10 @@
+language: java
+jdk:
+- oraclejdk8
+deploy:
+  provider: heroku
+  api_key:
+    secure: cUVrp5Xd40En2yipnMu/r0xCDiDsbvmBNxSKK5Q/3aeJiH9Os/rUbUdkOXqO+jRVP6rXDITDMeIsPPa0+lJbm5f6dAFxrAK5GmHb53Ab52biswfZhmsY7ggNNtb1YCIYELH83isMEbCgOikE/Ve52VcprujS/L7ywnnx6jXubGbvSItXjeT4agw3HK0DCRnjv7SCpfBcCz8efRjkA9DzIupQVPVwjs9fMJ/VTKfM2tuGwmlQPdD2e7d8tdbWIMV+tXom6Md/fDaTVIJMml6Swi6HFuVMRYspuxP1v158ZwQ62/eEgzdZcGh+kGLEDIIQ1Sx99ej30btacq1cT0o5A92ZNLLaH0ZHfBvn+CqV7Okf7v+qpihh4RqVpIetyy+4c6gPcKyzVRKfdxJsNUue/7sceiim8SAbhqIAe0yU6WFRY+wbvqAe51Ko9i2hfzUQtyJ+QpOEF8BYBlR9RCQjHGezbca6RSKRJb/uwCICk5HIgLCNO5z7rBXATKrrR8ZJ/w+if9ebXxEJmRCrk5ohXCTRTMsQrmYUjAiLHKc3eKT3oJvDvEw5op27s4AHD+6uFyNkHiFqT1WQZgkGCuL7Ya/pQwa5cyaO2nRRR/K/+91nCZdTHsY+YMpiigJk3yOXzEnDvdlG00IaWXlBdm7JvV939QOhkaOWgKe2c+W3G0Y=
+  app: rainbow-square-backend
+  on:
+    repo: djkah11/puzzle-09-2016
