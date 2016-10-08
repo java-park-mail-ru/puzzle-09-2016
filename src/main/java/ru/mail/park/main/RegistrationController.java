@@ -37,13 +37,6 @@ public class RegistrationController {
 
     @RequestMapping(path = "/api/session", method = RequestMethod.POST)
     public ResponseEntity auth(@RequestBody AuthRequest body, HttpSession httpSession) {
-        Object httpSessionLogin = httpSession.getAttribute("login");
-        if (httpSessionLogin != null) {
-            UserProfile user = accountService.getUserByLogin(httpSessionLogin.toString());
-            if (user != null) {
-                return ResponseEntity.ok(new SuccessResponse(user.getLogin()));
-            }
-        }
         String login = body.getLogin();
         String password = body.getPassword();
         if (StringUtils.isEmpty(login) || StringUtils.isEmpty(password)) {
@@ -55,6 +48,29 @@ public class RegistrationController {
         }
         httpSession.setAttribute("login", login);
         return ResponseEntity.ok(new SuccessResponse(login));
+    }
+
+    @RequestMapping(path = "/api/session", method = RequestMethod.GET)
+    public ResponseEntity sessionAuth(HttpSession httpSession) {
+        Object httpSessionLogin = httpSession.getAttribute("login");
+        if (httpSessionLogin == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+        }
+        UserProfile user = accountService.getUserByLogin(httpSessionLogin.toString());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+        }
+        return ResponseEntity.ok(new SuccessResponse(user.getLogin()));
+    }
+
+    @RequestMapping(path = "/api/session", method = RequestMethod.DELETE)
+    public ResponseEntity logout(HttpSession httpSession) {
+        Object httpSessionLogin = httpSession.getAttribute("login");
+        if (httpSessionLogin == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+        }
+        httpSession.setAttribute("login", null);
+        return ResponseEntity.ok(new SuccessResponse((String) httpSessionLogin));
     }
 
     @SuppressWarnings("unused")

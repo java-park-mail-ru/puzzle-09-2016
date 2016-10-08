@@ -50,11 +50,28 @@
       }
     },
     "/session": {
+      "get": {
+        "tags": [
+          "session"
+        ],
+        "description": "User authorization by session",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "400": {
+            "description": "Session unauthorized"
+          }
+        }
+      },
       "post": {
         "tags": [
           "session"
         ],
-        "description": "User authorization",
+        "description": "User authorization by login and password",
         "parameters": [
           {
             "name": "body",
@@ -73,6 +90,23 @@
           },
           "400": {
             "description": "Empty parameter or invalid username/password"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "session"
+        ],
+        "description": "User logout",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "400": {
+            "description": "Session unauthorized"
           }
         }
       }
