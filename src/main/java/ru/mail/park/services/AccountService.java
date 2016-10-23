@@ -1,22 +1,19 @@
 package ru.mail.park.services;
 
 import org.springframework.stereotype.Service;
+import ru.mail.park.model.UserDao;
+import ru.mail.park.model.UserDaoImpl;
 import ru.mail.park.model.UserProfile;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class AccountService {
-    private Map<String, UserProfile> userNameToUser = new ConcurrentHashMap<>();
+    private final UserDao userDao = new UserDaoImpl();
 
-    public UserProfile addUser(String login, String password, String email) {
-        final UserProfile user = new UserProfile(login, email, password);
-        userNameToUser.put(login, user);
-        return user;
+    public void addUser(String login, String password, String email) {
+        userDao.create(new UserProfile(login, email, password));
     }
 
     public UserProfile getUserByLogin(String login) {
-        return userNameToUser.get(login);
+        return userDao.getByLogin(login);
     }
 }
