@@ -8,12 +8,8 @@ import ru.mail.park.services.DataBaseService;
 public class UserDaoImpl implements UserDao {
     @Override
     public UserProfile getByLogin(String login) {
-        SqlRowSet set = DataBaseService.getJdbcTemplate().queryForRowSet("SELECT * FROM user_profile WHERE login = ?;",
-                login);
-        if (!set.next()) {
-            return null;
-        }
-        return new UserProfile(login, set.getString("email"), set.getString("passwd"));
+        return DataBaseService.getJdbcTemplate().queryForObject("SELECT * FROM user_profile WHERE login = ?;",
+                new UserRowMapper(), login);
     }
 
     @Override
