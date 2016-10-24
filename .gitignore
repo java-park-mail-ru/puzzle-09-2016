@@ -3,3 +3,10 @@ target/
 .idea/dataSources.*
 src/main/resources/application.properties
 src/test/resources/application.properties
+.idea/dictionaries/
+.idea/libraries/Maven__mysql_mysql_connector_java_5_1_39.xml
+.idea/libraries/Maven__org_apache_tomcat_tomcat_jdbc_8_5_5.xml
+.idea/libraries/Maven__org_apache_tomcat_tomcat_juli_8_5_5.xml
+.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_jdbc_1_4_1_RELEASE.xml
+.idea/libraries/Maven__org_springframework_spring_jdbc_4_3_3_RELEASE.xml
+.idea/libraries/Maven__org_springframework_spring_tx_4_3_3_RELEASE.xml
