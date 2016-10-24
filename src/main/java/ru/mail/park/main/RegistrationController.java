@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.mail.park.model.UserProfile;
+import ru.mail.park.model.exception.UserAlreadyExistsException;
 import ru.mail.park.services.AccountService;
 
 import javax.servlet.http.HttpSession;
@@ -28,10 +29,11 @@ public class RegistrationController {
         if (StringUtils.isEmpty(login) || StringUtils.isEmpty(password) || StringUtils.isEmpty(email)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
-        if (accountService.getUserByLogin(login) != null) {
+        try {
+            accountService.addUser(login, password, email);
+        } catch (UserAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
-        accountService.addUser(login, password, email);
         return ResponseEntity.ok(new SuccessResponse(login));
     }
 

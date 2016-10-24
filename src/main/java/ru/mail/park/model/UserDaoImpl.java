@@ -1,6 +1,8 @@
 package ru.mail.park.model;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import ru.mail.park.model.exception.UserAlreadyExistsException;
 import ru.mail.park.services.DataBaseService;
 
 public class UserDaoImpl implements UserDao {
@@ -21,8 +23,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void create(UserProfile entity) {
-        DataBaseService.getJdbcTemplate().update("INSERT INTO user_profile (login, passwd, email) VALUES (?, ?, ?);",
-                entity.getLogin(), entity.getPassword(), entity.getEmail());
+        try {
+            DataBaseService.getJdbcTemplate().update("INSERT INTO user_profile (login, passwd, email) " +
+                    "VALUES (?, ?, ?);", entity.getLogin(), entity.getPassword(), entity.getEmail());
+        } catch (DuplicateKeyException e) {
+            throw new UserAlreadyExistsException(e);
+        }
     }
 
     @Override
