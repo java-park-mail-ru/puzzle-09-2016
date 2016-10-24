@@ -1,7 +1,6 @@
 package ru.mail.park.model;
 
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import ru.mail.park.model.exception.UserAlreadyExistsException;
 import ru.mail.park.services.DataBaseService;
 
