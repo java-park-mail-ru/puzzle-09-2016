@@ -4,11 +4,24 @@ import org.springframework.dao.DuplicateKeyException;
 import ru.mail.park.model.exception.UserAlreadyExistsException;
 import ru.mail.park.services.DataBaseService;
 
+import java.util.List;
+
 public class UserDaoImpl implements UserDao {
     @Override
     public UserProfile getByLogin(String login) {
-        return DataBaseService.getJdbcTemplate().queryForObject("SELECT * FROM user_profile WHERE login = ?;",
+        List<UserProfile> list = DataBaseService.getJdbcTemplate().query("SELECT * FROM user_profile WHERE login = ?;",
                 new UserRowMapper(), login);
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
+    }
+
+    @Override
+    public List<UserProfile> getTopRanked(int limit) {
+        String limitOperator = limit > 0 ? " LIMIT " + limit : "";
+        return DataBaseService.getJdbcTemplate().query("SELECT * FROM user_profile ORDER BY rank DESC" +
+                limitOperator + ";", new UserRowMapper());
     }
 
     @Override
@@ -28,7 +41,8 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void update(UserProfile entity) {
-        throw new UnsupportedOperationException();
+        DataBaseService.getJdbcTemplate().update("UPDATE user_profile SET rank = ? WHERE " +
+                "login = ?;", entity.getRank(), entity.getLogin());
     }
 
     @Override

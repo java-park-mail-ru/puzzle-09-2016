@@ -31,38 +31,45 @@ public class TestRegistrationController {
     @Test
     public void addNewUser() {
         ResponseEntity<String> responseEntity = postUser("q", "w", "e");
-        assertEquals(responseEntity.getStatusCodeValue(), 200);
+        assertEquals(200, responseEntity.getStatusCodeValue());
         JSONObject response = new JSONObject(responseEntity.getBody());
-        assertEquals(response.get("login"), "q");
+        assertEquals("q", response.get("login"));
     }
 
     @Test
     public void addUserWithExistingLogin() {
         ResponseEntity responseEntity = postUser("a", "new", "new");
-        assertEquals(responseEntity.getStatusCodeValue(), 400);
-        assertEquals(responseEntity.getBody(), "{}");
+        assertEquals(400, responseEntity.getStatusCodeValue());
+        assertEquals("{}", responseEntity.getBody());
     }
 
     @Test
     public void addUserWithExistingEmail() {
         ResponseEntity responseEntity = postUser("new", "new", "c");
-        assertEquals(responseEntity.getStatusCodeValue(), 400);
-        assertEquals(responseEntity.getBody(), "{}");
+        assertEquals(400, responseEntity.getStatusCodeValue());
+        assertEquals("{}", responseEntity.getBody());
     }
 
     @Test
     public void login() {
         ResponseEntity<String> responseEntity = postSession("a", "b");
-        assertEquals(responseEntity.getStatusCodeValue(), 200);
+        assertEquals(200, responseEntity.getStatusCodeValue());
         JSONObject response = new JSONObject(responseEntity.getBody());
-        assertEquals(response.get("login"), "a");
+        assertEquals("a", response.get("login"));
     }
 
     @Test
     public void badLogin() {
         ResponseEntity responseEntity = postSession("a", "c");
-        assertEquals(responseEntity.getStatusCodeValue(), 400);
-        assertEquals(responseEntity.getBody(), "{}");
+        assertEquals(400, responseEntity.getStatusCodeValue());
+        assertEquals("{}", responseEntity.getBody());
+    }
+
+    @Test
+    public void notExistingUser() {
+        ResponseEntity responseEntity = postSession("www", "www");
+        assertEquals(400, responseEntity.getStatusCodeValue());
+        assertEquals("{}", responseEntity.getBody());
     }
 
     private ResponseEntity<String> postUser(String login, String password, String email) {

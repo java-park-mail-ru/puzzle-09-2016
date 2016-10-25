@@ -9,6 +9,7 @@ public class UserRowMapper implements BaseDaoEntityRowMapper<UserProfile> {
         String login = resultSet.getString("login");
         String password = resultSet.getString("passwd");
         String email = resultSet.getString("email");
-        return new UserProfile(login, email, password);
+        int rank = resultSet.getInt("rank");
+        return new UserProfile(login, email, password, rank);
     }
 }

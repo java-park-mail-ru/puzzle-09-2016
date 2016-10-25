@@ -4,11 +4,19 @@ public class UserProfile implements BaseDaoEntity {
     private String login;
     private String email;
     private String password;
+    private int rank;
 
     public UserProfile(String login, String email, String password) {
         this.login = login;
         this.email = email;
         this.password = password;
+    }
+
+    public UserProfile(String login, String email, String password, int rank) {
+        this.login = login;
+        this.email = email;
+        this.password = password;
+        this.rank = rank;
     }
 
     public String getLogin() {
@@ -21,5 +29,13 @@ public class UserProfile implements BaseDaoEntity {
 
     public String getPassword() {
         return password;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 }

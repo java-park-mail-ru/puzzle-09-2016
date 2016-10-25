@@ -5,6 +5,8 @@ import ru.mail.park.model.UserDao;
 import ru.mail.park.model.UserDaoImpl;
 import ru.mail.park.model.UserProfile;
 
+import java.util.List;
+
 @Service
 public class AccountService {
     private final UserDao userDao = new UserDaoImpl();
@@ -15,5 +17,13 @@ public class AccountService {
 
     public UserProfile getUserByLogin(String login) {
         return userDao.getByLogin(login);
+    }
+
+    public List<UserProfile> getTopRanked(int limit) {
+        return userDao.getTopRanked(limit);
+    }
+
+    public void updateUser(UserProfile userProfile) {
+        userDao.update(userProfile);
     }
 }
