@@ -2,8 +2,7 @@ services:
   - mysql
 before_script:
   - mysql -e 'CREATE DATABASE testdb;'
-  - mysql -e 'USE testdb;'
-  - mysql -e 'CREATE TABLE user_profile (id INT AUTO_INCREMENT NOT NULL PRIMARY KEY, login VARCHAR(50) NOT NULL, password VARCHAR(50) NOT NULL, email VARCHAR(50) NOT NULL, rank INT DEFAULT 1000, UNIQUE KEY(LOGIN), UNIQUE KEY(EMAIL)) DEFAULT CHARSET=utf8;'
+  - mysql -e 'CREATE TABLE testdb.user_profile (id INT AUTO_INCREMENT NOT NULL PRIMARY KEY, login VARCHAR(50) NOT NULL, password VARCHAR(50) NOT NULL, email VARCHAR(50) NOT NULL, rank INT DEFAULT 1000, UNIQUE KEY(LOGIN), UNIQUE KEY(EMAIL)) DEFAULT CHARSET=utf8;'
 language: java
 jdk:
 - oraclejdk8
