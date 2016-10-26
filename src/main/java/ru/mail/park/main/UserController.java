@@ -30,10 +30,10 @@ public class UserController {
         private String login;
         private int rank;
 
-        public LoginAndRank() {
+        private LoginAndRank() {
         }
 
-        public LoginAndRank(String login, int rank) {
+        private LoginAndRank(String login, int rank) {
             this.login = login;
             this.rank = rank;
         }

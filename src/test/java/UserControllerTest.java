@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.mail.park.Application;
 import ru.mail.park.model.UserProfile;
-import ru.mail.park.services.AccountService;
+import ru.mail.park.services.AccountServiceImpl;
 import ru.mail.park.services.DataBaseService;
 
 import static org.junit.Assert.assertEquals;
@@ -17,18 +17,20 @@ import static org.junit.Assert.assertEquals;
 @SuppressWarnings("SpringJavaAutowiredMembersInspection")
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class)
-public class TestUserController {
+public class UserControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
     @Autowired
-    private AccountService accountService;
+    private AccountServiceImpl accountService;
+    @Autowired
+    private DataBaseService dataBaseService;
 
     @Before
     public void init() {
-        DataBaseService.getJdbcTemplate().execute("TRUNCATE user_profile;");
-        UserProfile a = new UserProfile("a", "b", "c");
-        UserProfile q = new UserProfile("q", "w", "e");
-        UserProfile s = new UserProfile("s", "ss", "sss");
+        dataBaseService.getJdbcTemplate().execute("TRUNCATE user_profile;");
+        final UserProfile a = new UserProfile("a", "b", "c");
+        final UserProfile q = new UserProfile("q", "w", "e");
+        final UserProfile s = new UserProfile("s", "ss", "sss");
         accountService.addUser(a.getLogin(), a.getPassword(), a.getEmail());
         accountService.addUser(q.getLogin(), q.getPassword(), q.getEmail());
         accountService.addUser(s.getLogin(), s.getPassword(), s.getEmail());
@@ -42,9 +44,9 @@ public class TestUserController {
 
     @Test
     public void testTop() {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity("/api/user/top/", String.class);
+        final ResponseEntity<String> responseEntity = restTemplate.getForEntity("/api/user/top/", String.class);
         assertEquals(200, responseEntity.getStatusCodeValue());
-        JSONArray array = new JSONArray(responseEntity.getBody());
+        final JSONArray array = new JSONArray(responseEntity.getBody());
         assertEquals(3, array.length());
         assertEquals("q", array.getJSONObject(0).get("login"));
         assertEquals("a", array.getJSONObject(1).get("login"));

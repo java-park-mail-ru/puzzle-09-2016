@@ -23,9 +23,9 @@ public class RegistrationController {
 
     @RequestMapping(path = "/api/user", method = RequestMethod.POST)
     public ResponseEntity login(@RequestBody RegistrationRequest body) {
-        String login = body.getLogin();
-        String password = body.getPassword();
-        String email = body.getEmail();
+        final String login = body.getLogin();
+        final String password = body.getPassword();
+        final String email = body.getEmail();
         if (StringUtils.isEmpty(login) || StringUtils.isEmpty(password) || StringUtils.isEmpty(email)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
@@ -39,12 +39,12 @@ public class RegistrationController {
 
     @RequestMapping(path = "/api/session", method = RequestMethod.POST)
     public ResponseEntity auth(@RequestBody AuthRequest body, HttpSession httpSession) {
-        String login = body.getLogin();
-        String password = body.getPassword();
+        final String login = body.getLogin();
+        final String password = body.getPassword();
         if (StringUtils.isEmpty(login) || StringUtils.isEmpty(password)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
-        UserProfile user = accountService.getUserByLogin(login);
+        final UserProfile user = accountService.getUserByLogin(login);
         if (user == null || !user.getPassword().equals(password)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
@@ -54,11 +54,11 @@ public class RegistrationController {
 
     @RequestMapping(path = "/api/session", method = RequestMethod.GET)
     public ResponseEntity sessionAuth(HttpSession httpSession) {
-        Object httpSessionLogin = httpSession.getAttribute("login");
+        final Object httpSessionLogin = httpSession.getAttribute("login");
         if (httpSessionLogin == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
-        UserProfile user = accountService.getUserByLogin(httpSessionLogin.toString());
+        final UserProfile user = accountService.getUserByLogin(httpSessionLogin.toString());
         if (user == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
@@ -67,7 +67,7 @@ public class RegistrationController {
 
     @RequestMapping(path = "/api/session", method = RequestMethod.DELETE)
     public ResponseEntity logout(HttpSession httpSession) {
-        Object httpSessionLogin = httpSession.getAttribute("login");
+        final Object httpSessionLogin = httpSession.getAttribute("login");
         if (httpSessionLogin == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
         }
@@ -94,10 +94,10 @@ public class RegistrationController {
         private String password;
         private String email;
 
-        public RegistrationRequest() {
+        private RegistrationRequest() {
         }
 
-        public RegistrationRequest(String login, String password, String email) {
+        private RegistrationRequest(String login, String password, String email) {
             this.login = login;
             this.password = password;
             this.email = email;
@@ -133,10 +133,10 @@ public class RegistrationController {
         private String login;
         private String password;
 
-        public AuthRequest() {
+        private AuthRequest() {
         }
 
-        public AuthRequest(String login, String password) {
+        private AuthRequest(String login, String password) {
             this.login = login;
             this.password = password;
         }

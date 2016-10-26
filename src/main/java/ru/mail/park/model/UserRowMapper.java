@@ -6,10 +6,10 @@ import java.sql.SQLException;
 public class UserRowMapper implements BaseDaoEntityRowMapper<UserProfile> {
     @Override
     public UserProfile mapRow(ResultSet resultSet, int i) throws SQLException {
-        String login = resultSet.getString("login");
-        String password = resultSet.getString("passwd");
-        String email = resultSet.getString("email");
-        int rank = resultSet.getInt("rank");
+        final String login = resultSet.getString("login");
+        final String password = resultSet.getString("passwd");
+        final String email = resultSet.getString("email");
+        final int rank = resultSet.getInt("rank");
         return new UserProfile(login, email, password, rank);
     }
 }

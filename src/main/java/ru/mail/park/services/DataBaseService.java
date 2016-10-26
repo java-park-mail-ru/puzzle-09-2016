@@ -5,13 +5,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class DataBaseService {
-    private static JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     public DataBaseService(JdbcTemplate jdbcTemplate) {
-        DataBaseService.jdbcTemplate = jdbcTemplate;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    public static JdbcTemplate getJdbcTemplate() {
+    public JdbcTemplate getJdbcTemplate() {
         return jdbcTemplate;
     }
 }
