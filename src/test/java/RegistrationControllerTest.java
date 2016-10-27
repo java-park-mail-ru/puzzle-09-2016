@@ -29,10 +29,14 @@ public class RegistrationControllerTest {
 
     @Test
     public void addNewUser() {
-        final ResponseEntity<String> responseEntity = postUser("q", "w", "e");
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        final JSONObject response = new JSONObject(responseEntity.getBody());
-        assertEquals("q", response.get("login"));
+        final ResponseEntity<String> postUserResponse = postUser("q", "w", "e");
+        assertEquals(HttpStatus.OK, postUserResponse.getStatusCode());
+        final JSONObject postUserResponseBody = new JSONObject(postUserResponse.getBody());
+        assertEquals("q", postUserResponseBody.get("login"));
+        final ResponseEntity<String> postSessionResponse = postSession("q", "w");
+        assertEquals(HttpStatus.OK, postSessionResponse.getStatusCode());
+        final JSONObject postSessionResponseBody = new JSONObject(postSessionResponse.getBody());
+        assertEquals("q", postSessionResponseBody.get("login"));
     }
 
     @Test
