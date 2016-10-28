@@ -42,14 +42,14 @@ public class RegistrationControllerTest {
     @Test
     public void addUserWithExistingLogin() {
         final ResponseEntity responseEntity = postUser("a", "new", "new");
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
         assertEquals("{}", responseEntity.getBody());
     }
 
     @Test
     public void addUserWithExistingEmail() {
         final ResponseEntity responseEntity = postUser("new", "new", "c");
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
         assertEquals("{}", responseEntity.getBody());
     }
 
@@ -64,14 +64,14 @@ public class RegistrationControllerTest {
     @Test
     public void badLogin() {
         final ResponseEntity responseEntity = postSession("a", "c");
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
         assertEquals("{}", responseEntity.getBody());
     }
 
     @Test
     public void notExistingUser() {
         final ResponseEntity responseEntity = postSession("www", "www");
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
         assertEquals("{}", responseEntity.getBody());
     }
 
