@@ -9,10 +9,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 
 @ControllerAdvice
 public class ExceptionHandler {
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     @org.springframework.web.bind.annotation.ExceptionHandler(DataAccessException.class)
     public ResponseEntity  handleDataAccessException(DataAccessException e) {
         logger.error("Exception: ", e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body("{}");
     }
 }

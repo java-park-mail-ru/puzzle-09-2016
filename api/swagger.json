@@ -44,7 +44,10 @@
             }
           },
           "400": {
-            "description": "Empty parameter or user already registered"
+            "description": "Empty parameter"
+          },
+          "409": {
+            "description": "User is already registered"
           }
         }
       }
@@ -86,7 +89,7 @@
               "$ref": "#/definitions/SuccessResponse"
             }
           },
-          "400": {
+          "401": {
             "description": "Session unauthorized"
           }
         }
@@ -113,7 +116,10 @@
             }
           },
           "400": {
-            "description": "Empty parameter or invalid username/password"
+            "description": "Empty parameter"
+          },
+          "401": {
+            "description": "Invalid username/password"
           }
         }
       },
@@ -129,7 +135,7 @@
               "$ref": "#/definitions/SuccessResponse"
             }
           },
-          "400": {
+          "401": {
             "description": "Session unauthorized"
           }
         }

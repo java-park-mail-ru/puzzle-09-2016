@@ -32,7 +32,7 @@ public class RegistrationController {
         try {
             accountService.addUser(login, password, email);
         } catch (UserAlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("{}");
         }
         return ResponseEntity.ok(new SuccessResponse(login));
     }
@@ -46,7 +46,7 @@ public class RegistrationController {
         }
         final UserProfile user = accountService.getUserByLogin(login);
         if (user == null || !user.getPassword().equals(password)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
         }
         httpSession.setAttribute("login", login);
         return ResponseEntity.ok(new SuccessResponse(login));
@@ -56,11 +56,11 @@ public class RegistrationController {
     public ResponseEntity sessionAuth(HttpSession httpSession) {
         final Object httpSessionLogin = httpSession.getAttribute("login");
         if (httpSessionLogin == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
         }
         final UserProfile user = accountService.getUserByLogin(httpSessionLogin.toString());
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
         }
         return ResponseEntity.ok(new SuccessResponse(user.getLogin()));
     }
@@ -69,9 +69,9 @@ public class RegistrationController {
     public ResponseEntity logout(HttpSession httpSession) {
         final Object httpSessionLogin = httpSession.getAttribute("login");
         if (httpSessionLogin == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
         }
-        httpSession.setAttribute("login", null);
+        httpSession.removeAttribute("login");
         return ResponseEntity.ok(new SuccessResponse((String) httpSessionLogin));
     }
 
