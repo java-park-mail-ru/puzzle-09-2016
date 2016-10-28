@@ -10,6 +10,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.mail.park.Application;
 import ru.mail.park.services.DataBaseService;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("SpringJavaAutowiredMembersInspection")
@@ -64,14 +66,14 @@ public class RegistrationControllerTest {
     @Test
     public void badLogin() {
         final ResponseEntity responseEntity = postSession("a", "c");
-        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
         assertEquals("{}", responseEntity.getBody());
     }
 
     @Test
     public void notExistingUser() {
         final ResponseEntity responseEntity = postSession("www", "www");
-        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
         assertEquals("{}", responseEntity.getBody());
     }
 

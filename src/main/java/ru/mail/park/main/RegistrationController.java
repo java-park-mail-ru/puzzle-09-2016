@@ -46,7 +46,7 @@ public class RegistrationController {
         }
         final UserProfile user = accountService.getUserByLogin(login);
         if (user == null || !user.getPassword().equals(password)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
         }
         httpSession.setAttribute("login", login);
         return ResponseEntity.ok(new SuccessResponse(login));
@@ -56,11 +56,11 @@ public class RegistrationController {
     public ResponseEntity sessionAuth(HttpSession httpSession) {
         final Object httpSessionLogin = httpSession.getAttribute("login");
         if (httpSessionLogin == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
         }
         final UserProfile user = accountService.getUserByLogin(httpSessionLogin.toString());
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
         }
         return ResponseEntity.ok(new SuccessResponse(user.getLogin()));
     }
@@ -69,7 +69,7 @@ public class RegistrationController {
     public ResponseEntity logout(HttpSession httpSession) {
         final Object httpSessionLogin = httpSession.getAttribute("login");
         if (httpSessionLogin == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{}");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
         }
         httpSession.removeAttribute("login");
         return ResponseEntity.ok(new SuccessResponse((String) httpSessionLogin));
