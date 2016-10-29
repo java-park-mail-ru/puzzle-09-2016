@@ -143,17 +143,6 @@
     }
   },
   "definitions": {
-    "ApiResponse": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer"
-        },
-        "content": {
-          "type": "object"
-        }
-      }
-    },
     "RegistrationRequest": {
       "type": "object",
       "properties": {
