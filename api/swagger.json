@@ -154,6 +154,19 @@
         }
       }
     },
+    "DbError": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "value": 8
+        },
+        "content": {
+          "type": "string",
+          "value": "Error querying database"
+        }
+      }
+    },
     "ApiTopResponse": {
       "type": "object",
       "properties": {
