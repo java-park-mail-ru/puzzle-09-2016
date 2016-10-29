@@ -1,4 +1,5 @@
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.mail.park.Application;
+import ru.mail.park.main.ResponseCode;
 import ru.mail.park.model.UserProfile;
 import ru.mail.park.services.AccountServiceImpl;
 import ru.mail.park.services.DataBaseService;
@@ -46,7 +48,9 @@ public class UserControllerTest {
     public void testTop() {
         final ResponseEntity<String> responseEntity = restTemplate.getForEntity("/api/user/top/", String.class);
         assertEquals(200, responseEntity.getStatusCodeValue());
-        final JSONArray array = new JSONArray(responseEntity.getBody());
+        final JSONObject response = new JSONObject(responseEntity.getBody());
+        assertEquals(ResponseCode.OK.getCode(), response.getInt("code"));
+        final JSONArray array = response.getJSONArray("content");
         assertEquals(3, array.length());
         assertEquals("q", array.getJSONObject(0).get("login"));
         assertEquals("a", array.getJSONObject(1).get("login"));

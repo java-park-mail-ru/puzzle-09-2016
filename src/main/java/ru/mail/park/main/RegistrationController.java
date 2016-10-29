@@ -1,7 +1,6 @@
 package ru.mail.park.main;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -22,19 +21,19 @@ public class RegistrationController {
     }
 
     @RequestMapping(path = "/api/user", method = RequestMethod.POST)
-    public ResponseEntity login(@RequestBody RegistrationRequest body) {
+    public ResponseEntity signup(@RequestBody RegistrationRequest body) {
         final String login = body.getLogin();
         final String password = body.getPassword();
         final String email = body.getEmail();
         if (StringUtils.isEmpty(login) || StringUtils.isEmpty(password) || StringUtils.isEmpty(email)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+            return ApiResponse.parameterMissing();
         }
         try {
             accountService.addUser(login, password, email);
         } catch (UserAlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("{}");
+            return ApiResponse.duplicateUser();
         }
-        return ResponseEntity.ok(new SuccessResponse(login));
+        return ApiResponse.ok(new SuccessResponse(login));
     }
 
     @RequestMapping(path = "/api/session", method = RequestMethod.POST)
@@ -42,37 +41,37 @@ public class RegistrationController {
         final String login = body.getLogin();
         final String password = body.getPassword();
         if (StringUtils.isEmpty(login) || StringUtils.isEmpty(password)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+            return ApiResponse.parameterMissing();
         }
         final UserProfile user = accountService.getUserByLogin(login);
         if (user == null || !user.getPassword().equals(password)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
+            return ApiResponse.authError();
         }
         httpSession.setAttribute("login", login);
-        return ResponseEntity.ok(new SuccessResponse(login));
+        return ApiResponse.ok(new SuccessResponse(login));
     }
 
     @RequestMapping(path = "/api/session", method = RequestMethod.GET)
     public ResponseEntity sessionAuth(HttpSession httpSession) {
         final Object httpSessionLogin = httpSession.getAttribute("login");
         if (httpSessionLogin == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
+            return ApiResponse.authError();
         }
         final UserProfile user = accountService.getUserByLogin(httpSessionLogin.toString());
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
+            return ApiResponse.authError();
         }
-        return ResponseEntity.ok(new SuccessResponse(user.getLogin()));
+        return ApiResponse.ok(new SuccessResponse(user.getLogin()));
     }
 
     @RequestMapping(path = "/api/session", method = RequestMethod.DELETE)
     public ResponseEntity logout(HttpSession httpSession) {
         final Object httpSessionLogin = httpSession.getAttribute("login");
         if (httpSessionLogin == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{}");
+            return ApiResponse.authError();
         }
         httpSession.removeAttribute("login");
-        return ResponseEntity.ok(new SuccessResponse((String) httpSessionLogin));
+        return ApiResponse.ok(new SuccessResponse((String) httpSessionLogin));
     }
 
     @SuppressWarnings("unused")

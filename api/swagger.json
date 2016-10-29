@@ -70,7 +70,7 @@
           "200": {
             "description": "Successful operation",
             "schema": {
-              "$ref": "#/definitions/TopResponse"
+              "$ref": "#/definitions/ApiTopResponse"
             }
           }
         }
@@ -143,6 +143,29 @@
     }
   },
   "definitions": {
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer"
+        },
+        "content": {
+          "type": "object"
+        }
+      }
+    },
+    "ApiTopResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "value": "0"
+        },
+        "content": {
+          "$ref": "#/definitions/TopResponse"
+        }
+      }
+    },
     "RegistrationRequest": {
       "type": "object",
       "properties": {

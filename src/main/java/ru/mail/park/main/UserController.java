@@ -20,7 +20,7 @@ public class UserController {
         if (limit == null) {
             limit = 0;
         }
-        return ResponseEntity.ok(accountService.getTopRanked(limit).stream().map(
+        return ApiResponse.ok(accountService.getTopRanked(limit).stream().map(
                 userProfile -> new LoginAndRank(userProfile.getLogin(), userProfile.getRank())).toArray());
 
     }
