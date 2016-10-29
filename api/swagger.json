@@ -70,13 +70,7 @@
           "200": {
             "description": "Successful operation",
             "schema": {
-              "$ref": "#/definitions/ApiTopResponse"
-            }
-          },
-          "DB error": {
-            "description": "Error querying database",
-            "schema": {
-              "$ref": "#/definitions/DbError"
+              "$ref": "#/definitions/TopResponse"
             }
           }
         }
@@ -157,25 +151,6 @@
         },
         "content": {
           "type": "object"
-        }
-      }
-    },
-    "DbError": {
-      "type": "object",
-      "properties": {
-        "code": 8,
-        "content": "Error querying database"
-      }
-    },
-    "ApiTopResponse": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer",
-          "value": "0"
-        },
-        "content": {
-          "$ref": "#/definitions/TopResponse"
         }
       }
     },
