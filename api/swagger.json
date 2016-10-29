@@ -66,22 +66,20 @@
             "required": false
           }
         ],
-        "responseMessages": [
-          {
-            "code": "200",
-            "message": "Successful operation",
-            "responseModel": {
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
               "$ref": "#/definitions/ApiTopResponse"
             }
           },
-          {
-            "code": "200",
-            "message": "Error querying database",
-            "responseModel": {
+          "DB error": {
+            "description": "Error querying database",
+            "schema": {
               "$ref": "#/definitions/DbError"
             }
           }
-        ]
+        }
       }
     },
     "/session": {
