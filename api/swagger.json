@@ -72,6 +72,12 @@
             "schema": {
               "$ref": "#/definitions/ApiTopResponse"
             }
+          },
+          "200": {
+            "description": "Error querying database",
+            "schema": {
+              "$ref": "#/definitions/DbError"
+            }
           }
         }
       }
