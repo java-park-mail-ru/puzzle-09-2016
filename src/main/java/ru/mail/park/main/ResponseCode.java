@@ -1,6 +1,7 @@
 package ru.mail.park.main;
 
 public enum  ResponseCode {
+    @SuppressWarnings("all")
     OK(0, "OK"),
     PARAMETER_MISSING(1, "Required parameter is missing"),
     AUTH_ERROR(2, "Authorization error"),

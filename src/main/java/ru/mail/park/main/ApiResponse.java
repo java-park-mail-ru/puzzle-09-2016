@@ -35,6 +35,7 @@ public class ApiResponse {
         this.content = content;
     }
 
+    @SuppressWarnings("all")
     public static ResponseEntity ok(Object content) {
         return ResponseEntity.ok(new ApiResponse(ResponseCode.OK.getCode(), content));
     }
