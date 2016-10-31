@@ -44,17 +44,61 @@
             }
           },
           "400": {
-            "description": "Empty parameter or user already registered"
+            "description": "Empty parameter"
+          },
+          "409": {
+            "description": "User is already registered"
+          }
+        }
+      }
+    },
+    "/user/top": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "description": "Get top users",
+        "parameters": [
+          {
+            "name": "limit",
+            "description": "Max number of users returned",
+            "type": "integer",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/TopResponse"
+            }
           }
         }
       }
     },
     "/session": {
+      "get": {
+        "tags": [
+          "session"
+        ],
+        "description": "User authorization by session",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Session unauthorized"
+          }
+        }
+      },
       "post": {
         "tags": [
           "session"
         ],
-        "description": "User authorization",
+        "description": "User authorization by login and password",
         "parameters": [
           {
             "name": "body",
@@ -72,7 +116,27 @@
             }
           },
           "400": {
-            "description": "Empty parameter or invalid username/password"
+            "description": "Empty parameter"
+          },
+          "401": {
+            "description": "Invalid username/password"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "session"
+        ],
+        "description": "User logout",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "401": {
+            "description": "Session unauthorized"
           }
         }
       }
@@ -109,6 +173,23 @@
       "properties": {
         "login": {
           "type": "string"
+        }
+      }
+    },
+    "TopResponse": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/LoginAndRank"
+      }
+    },
+    "LoginAndRank": {
+      "type": "object",
+      "properties": {
+        "login": {
+          "type": "string"
+        },
+        "rank": {
+          "type": "integer"
         }
       }
     }

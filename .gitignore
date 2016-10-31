@@ -1,2 +1,5 @@
 target/
-.idea/workspace.xml
+.idea/*
+src/main/resources/application.properties
+src/test/resources/application.properties
+puzzle-09-2016.iml

@@ -1,3 +1,8 @@
+services:
+  - mysql
+before_script:
+  - mysql -e 'CREATE DATABASE testdb;'
+  - mysql -e 'USE testdb;'
 language: java
 jdk:
 - oraclejdk8

@@ -1,11 +1,11 @@
 package ru.mail.park.main;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.mail.park.model.UserProfile;
+import ru.mail.park.model.exception.UserAlreadyExistsException;
 import ru.mail.park.services.AccountService;
 
 import javax.servlet.http.HttpSession;
@@ -21,40 +21,57 @@ public class RegistrationController {
     }
 
     @RequestMapping(path = "/api/user", method = RequestMethod.POST)
-    public ResponseEntity login(@RequestBody RegistrationRequest body) {
-        String login = body.getLogin();
-        String password = body.getPassword();
-        String email = body.getEmail();
+    public ResponseEntity signup(@RequestBody RegistrationRequest body) {
+        final String login = body.getLogin();
+        final String password = body.getPassword();
+        final String email = body.getEmail();
         if (StringUtils.isEmpty(login) || StringUtils.isEmpty(password) || StringUtils.isEmpty(email)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+            return ApiResponse.parameterMissing();
         }
-        if (accountService.getUserByLogin(login) != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+        try {
+            accountService.addUser(login, password, email);
+        } catch (UserAlreadyExistsException e) {
+            return ApiResponse.duplicateUser();
         }
-        accountService.addUser(login, password, email);
-        return ResponseEntity.ok(new SuccessResponse(login));
+        return ApiResponse.ok(new SuccessResponse(login));
     }
 
     @RequestMapping(path = "/api/session", method = RequestMethod.POST)
     public ResponseEntity auth(@RequestBody AuthRequest body, HttpSession httpSession) {
-        Object httpSessionLogin = httpSession.getAttribute("login");
-        if (httpSessionLogin != null) {
-            UserProfile user = accountService.getUserByLogin(httpSessionLogin.toString());
-            if (user != null) {
-                return ResponseEntity.ok(new SuccessResponse(user.getLogin()));
-            }
-        }
-        String login = body.getLogin();
-        String password = body.getPassword();
+        final String login = body.getLogin();
+        final String password = body.getPassword();
         if (StringUtils.isEmpty(login) || StringUtils.isEmpty(password)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+            return ApiResponse.parameterMissing();
         }
-        UserProfile user = accountService.getUserByLogin(login);
+        final UserProfile user = accountService.getUserByLogin(login);
         if (user == null || !user.getPassword().equals(password)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{}");
+            return ApiResponse.authError();
         }
         httpSession.setAttribute("login", login);
-        return ResponseEntity.ok(new SuccessResponse(login));
+        return ApiResponse.ok(new SuccessResponse(login));
+    }
+
+    @RequestMapping(path = "/api/session", method = RequestMethod.GET)
+    public ResponseEntity sessionAuth(HttpSession httpSession) {
+        final Object httpSessionLogin = httpSession.getAttribute("login");
+        if (httpSessionLogin == null) {
+            return ApiResponse.authError();
+        }
+        final UserProfile user = accountService.getUserByLogin(httpSessionLogin.toString());
+        if (user == null) {
+            return ApiResponse.authError();
+        }
+        return ApiResponse.ok(new SuccessResponse(user.getLogin()));
+    }
+
+    @RequestMapping(path = "/api/session", method = RequestMethod.DELETE)
+    public ResponseEntity logout(HttpSession httpSession) {
+        final Object httpSessionLogin = httpSession.getAttribute("login");
+        if (httpSessionLogin == null) {
+            return ApiResponse.authError();
+        }
+        httpSession.removeAttribute("login");
+        return ApiResponse.ok(new SuccessResponse((String) httpSessionLogin));
     }
 
     @SuppressWarnings("unused")
@@ -76,10 +93,10 @@ public class RegistrationController {
         private String password;
         private String email;
 
-        public RegistrationRequest() {
+        private RegistrationRequest() {
         }
 
-        public RegistrationRequest(String login, String password, String email) {
+        private RegistrationRequest(String login, String password, String email) {
             this.login = login;
             this.password = password;
             this.email = email;
@@ -115,10 +132,10 @@ public class RegistrationController {
         private String login;
         private String password;
 
-        public AuthRequest() {
+        private AuthRequest() {
         }
 
-        public AuthRequest(String login, String password) {
+        private AuthRequest(String login, String password) {
             this.login = login;
             this.password = password;
         }

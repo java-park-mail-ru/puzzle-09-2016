@@ -1,19 +1,22 @@
 package ru.mail.park.model;
 
-import java.util.concurrent.atomic.AtomicLong;
-
-public class UserProfile {
+public class UserProfile implements BaseDaoEntity {
     private String login;
     private String email;
     private String password;
-    private static final AtomicLong ID_GENERATOR = new AtomicLong(0);
-    private long id;
+    private int rank;
 
     public UserProfile(String login, String email, String password) {
         this.login = login;
         this.email = email;
         this.password = password;
-        id = ID_GENERATOR.getAndIncrement();
+    }
+
+    public UserProfile(String login, String email, String password, int rank) {
+        this.login = login;
+        this.email = email;
+        this.password = password;
+        this.rank = rank;
     }
 
     public String getLogin() {
@@ -26,5 +29,13 @@ public class UserProfile {
 
     public String getPassword() {
         return password;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 }
