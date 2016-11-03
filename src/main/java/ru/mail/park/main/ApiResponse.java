@@ -35,7 +35,7 @@ public class ApiResponse {
         this.content = content;
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings("StaticMethodNamingConvention")
     public static ResponseEntity ok(Object content) {
         return ResponseEntity.ok(new ApiResponse(ResponseCode.OK.getCode(), content));
     }
