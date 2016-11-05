@@ -16,7 +16,7 @@ import ru.mail.park.services.DataBaseService;
 
 import static org.junit.Assert.assertEquals;
 
-@SuppressWarnings("SpringJavaAutowiredMembersInspection")
+@SuppressWarnings({"SpringJavaAutowiredMembersInspection", "MagicNumber"})
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class)
 public class UserControllerTest {
