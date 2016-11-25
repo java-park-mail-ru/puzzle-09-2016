@@ -18,7 +18,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private AccountService accountService;
     private RemotePointService remotePointService;
-    private MessageHandlerContainer messageHandlerContainer;
+    private MessageHandlerService messageHandlerService;
 
     public GameSocketHandler(AccountService accountService, RemotePointService remotePointService) {
         this.accountService = accountService;
@@ -61,7 +61,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
             return;
         }
         try {
-            messageHandlerContainer.handle(message, userProfile);
+            messageHandlerService.handle(message, userProfile);
         } catch (HandleException e) {
             logger.error("Can't handle message of type " + message.getType() + " with content: " + message.getContent(),
                     e);

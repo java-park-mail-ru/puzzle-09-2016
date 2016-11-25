@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class MessageHandlerContainer {
+public class MessageHandlerService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     final Map<Class<?>, MessageHandler<?>> handlerMap = new HashMap<>();
 
