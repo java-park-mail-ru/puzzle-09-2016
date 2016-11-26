@@ -39,15 +39,16 @@ public class UserProfile implements BaseDaoEntity {
         this.rank = rank;
     }
 
+    @SuppressWarnings("all")
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserProfile that = (UserProfile) o;
-        if (rank != that.rank) return false;
-        if (!login.equals(that.login)) return false;
-        if (!email.equals(that.email)) return false;
-        return password.equals(that.password);
+        final UserProfile userProfile = (UserProfile) o;
+        if (rank != userProfile.rank) return false;
+        if (!login.equals(userProfile.login)) return false;
+        if (!email.equals(userProfile.email)) return false;
+        return password.equals(userProfile.password);
     }
 
     @Override
