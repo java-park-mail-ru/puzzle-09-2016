@@ -62,7 +62,7 @@ public class GameMechService {
                 final Player winner = session.getWinner();
                 if (winner != null) {
                     processGameOver(session, winner);
-                    terminateSession(session);
+                    terminateSession(session, CloseStatus.NORMAL);
                     iterator.remove();
                     serverSnapService.sendGameOverSnap(session, winner);
                 } else {
@@ -70,7 +70,7 @@ public class GameMechService {
                 }
             } catch (RuntimeException e) {
                 logger.error("Sending snapshots failed, terminating the session", e);
-                terminateSession(session);
+                terminateSession(session, CloseStatus.SERVER_ERROR);
                 iterator.remove();
             }
         }
@@ -90,7 +90,7 @@ public class GameMechService {
 
     public void reset() {
         for (GameSession session : gameSessions) {
-            terminateSession(session);
+            terminateSession(session, CloseStatus.SERVER_ERROR);
         }
         gameSessions.clear();
     }
@@ -120,9 +120,9 @@ public class GameMechService {
         return remotePointService.isConnected(userProfile);
     }
 
-    private void terminateSession(GameSession session) {
-        remotePointService.cutDownConnection(session.getFirst().getUserProfile(), CloseStatus.SERVER_ERROR);
-        remotePointService.cutDownConnection(session.getSecond().getUserProfile(), CloseStatus.SERVER_ERROR);
+    private void terminateSession(GameSession session, CloseStatus closeStatus) {
+        remotePointService.cutDownConnection(session.getFirst().getUserProfile(), closeStatus);
+        remotePointService.cutDownConnection(session.getSecond().getUserProfile(), closeStatus);
         players.remove(session.getFirst().getUserProfile());
         players.remove(session.getSecond().getUserProfile());
     }
