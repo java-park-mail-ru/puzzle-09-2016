@@ -27,14 +27,14 @@ public class ServerSnapService {
     }
 
     public void sendGameOverSnap(GameSession session, Player winner) {
-        sendSnap(session, true, winner.getUserProfile().getLogin());
+        sendSnap(session, true, winner.getUser().getLogin());
     }
 
     @SuppressWarnings("OverlyBroadCatchBlock")
     private void sendSnap(GameSession session, boolean gameOver, String winner) {
         final ServerSnap snap = new ServerSnap();
-        snap.setFirstPlayer(session.getFirst().getUserProfile().getLogin());
-        snap.setSecondPlayer(session.getSecond().getUserProfile().getLogin());
+        snap.setFirstPlayer(session.getFirst().getUser().getLogin());
+        snap.setSecondPlayer(session.getSecond().getUser().getLogin());
         snap.setFirstMatrix(session.getFirst().getSquare().getMatrix());
         snap.setSecondMatrix(session.getSecond().getSquare().getMatrix());
         snap.setTarget(session.getTarget().getMatrix());
@@ -46,7 +46,7 @@ public class ServerSnapService {
         try {
             final Message message = new Message(ServerSnap.class.getName(), objectMapper.writeValueAsString(snap));
             for (Player player : players) {
-                remotePointService.sendMessageToUser(player.getUserProfile(), message);
+                remotePointService.sendMessageToUser(player.getUser(), message);
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed sending snapshot", e);

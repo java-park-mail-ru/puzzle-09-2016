@@ -40,6 +40,6 @@ public class PlayerActionService {
     }
 
     private List<PlayerAction> getActionsForPlayer(Player player) {
-        return userActions.getOrDefault(player.getUserProfile(), Collections.emptyList());
+        return userActions.getOrDefault(player.getUser(), Collections.emptyList());
     }
 }

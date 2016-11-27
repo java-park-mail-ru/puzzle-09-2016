@@ -3,15 +3,15 @@ package ru.mail.park.game.mechanics;
 import ru.mail.park.model.UserProfile;
 
 public class Player {
-    private UserProfile userProfile;
+    private UserProfile user;
     private Square square = new Square();
 
-    public Player(UserProfile userProfile) {
-        this.userProfile = userProfile;
+    public Player(UserProfile user) {
+        this.user = user;
     }
 
-    public UserProfile getUserProfile() {
-        return userProfile;
+    public UserProfile getUser() {
+        return user;
     }
 
     public Square getSquare() {

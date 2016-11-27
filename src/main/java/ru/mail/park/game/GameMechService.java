@@ -59,12 +59,20 @@ public class GameMechService {
         while (iterator.hasNext()) {
             final GameSession session = iterator.next();
             try {
-                final Player winner = session.getWinner();
-                if (winner != null) {
-                    processGameOver(session, winner);
+                if (!isConnected(session.getFirst().getUser()) && !isConnected(session.getSecond().getUser())) {
                     terminateSession(session, CloseStatus.NORMAL);
                     iterator.remove();
-                    serverSnapService.sendGameOverSnap(session, winner);
+                } else if (!isConnected(session.getFirst().getUser())) {
+                    endGame(session, session.getSecond());
+                    iterator.remove();
+                } else if (!isConnected(session.getSecond().getUser())) {
+                    endGame(session, session.getFirst());
+                    iterator.remove();
+                }
+                final Player winner = session.getWinner();
+                if (winner != null) {
+                    endGame(session, winner);
+                    iterator.remove();
                 } else {
                     serverSnapService.sendSnapForSession(session);
                 }
@@ -78,14 +86,16 @@ public class GameMechService {
     }
 
     @Transactional
-    private void processGameOver(GameSession session, Player winner) {
+    private void endGame(GameSession session, Player winner) {
         final Player loser = winner.equals(session.getFirst()) ? session.getSecond() : session.getFirst();
-        final UserProfile winnerProfile = winner.getUserProfile();
-        final UserProfile loserProfile = loser.getUserProfile();
+        final UserProfile winnerProfile = winner.getUser();
+        final UserProfile loserProfile = loser.getUser();
         winnerProfile.setRank(winnerProfile.getRank() + WIN_RANK_GAIN);
         loserProfile.setRank(loserProfile.getRank() - WIN_RANK_GAIN);
         accountService.updateUser(winnerProfile);
         accountService.updateUser(loserProfile);
+        serverSnapService.sendGameOverSnap(session, winner);
+        terminateSession(session, CloseStatus.NORMAL);
     }
 
     public void reset() {
@@ -121,9 +131,9 @@ public class GameMechService {
     }
 
     private void terminateSession(GameSession session, CloseStatus closeStatus) {
-        remotePointService.cutDownConnection(session.getFirst().getUserProfile(), closeStatus);
-        remotePointService.cutDownConnection(session.getSecond().getUserProfile(), closeStatus);
-        players.remove(session.getFirst().getUserProfile());
-        players.remove(session.getSecond().getUserProfile());
+        remotePointService.cutDownConnection(session.getFirst().getUser(), closeStatus);
+        remotePointService.cutDownConnection(session.getSecond().getUser(), closeStatus);
+        players.remove(session.getFirst().getUser());
+        players.remove(session.getSecond().getUser());
     }
 }
