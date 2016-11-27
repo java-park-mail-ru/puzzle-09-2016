@@ -38,11 +38,14 @@ public class Square {
     }
 
     private void add(int row, int col, int value) {
-        matrix[row][col] += value;
-        if (matrix[row][col] > MAX_VALUE) {
-            matrix[row][col] = MAX_VALUE;
-        } else if (matrix[row][col] < MIN_VALUE) {
-            matrix[row][col] = MIN_VALUE;
+        try {
+            matrix[row][col] += value;
+            if (matrix[row][col] > MAX_VALUE) {
+                matrix[row][col] = MAX_VALUE;
+            } else if (matrix[row][col] < MIN_VALUE) {
+                matrix[row][col] = MIN_VALUE;
+            }
+        } catch (IndexOutOfBoundsException ignore) {
         }
     }
 

@@ -20,18 +20,20 @@ public class GameSocketHandler extends TextWebSocketHandler {
     private RemotePointService remotePointService;
     private MessageHandlerService messageHandlerService;
 
-    public GameSocketHandler(AccountService accountService, RemotePointService remotePointService) {
+    public GameSocketHandler(AccountService accountService, RemotePointService remotePointService,
+                             MessageHandlerService messageHandlerService) {
         this.accountService = accountService;
         this.remotePointService = remotePointService;
+        this.messageHandlerService = messageHandlerService;
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws AuthenticationException {
-        final Object httpSessionLogin = session.getAttributes().get("login");
-        if (httpSessionLogin == null) {
+        final Object sessionLogin = session.getAttributes().get("login");
+        if (sessionLogin == null) {
             throw new AuthenticationException("Only authenticated users are allowed to play the game");
         }
-        final UserProfile userProfile = accountService.getUserByLogin(httpSessionLogin.toString());
+        final UserProfile userProfile = accountService.getUserByLogin(sessionLogin.toString());
         if (userProfile == null) {
             throw new AuthenticationException("Only authenticated users are allowed to play the game");
         }
