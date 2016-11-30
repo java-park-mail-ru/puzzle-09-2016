@@ -1,44 +1,44 @@
 package ru.mail.park.game.messaging;
 
 public class ServerSnap {
-    private String firstPlayer;
-    private String secondPlayer;
-    private int[][] firstMatrix;
-    private int[][] secondMatrix;
+    private String player;
+    private String opponent;
+    private int[][] playerMatrix;
+    private int[][] opponentMatrix;
     private int[][] target;
     private boolean gameOver;
-    private String winner;
+    private boolean win;
 
-    public String getFirstPlayer() {
-        return firstPlayer;
+    public String getPlayer() {
+        return player;
     }
 
-    public void setFirstPlayer(String firstPlayer) {
-        this.firstPlayer = firstPlayer;
+    public void setPlayer(String player) {
+        this.player = player;
     }
 
-    public String getSecondPlayer() {
-        return secondPlayer;
+    public String getOpponent() {
+        return opponent;
     }
 
-    public void setSecondPlayer(String secondPlayer) {
-        this.secondPlayer = secondPlayer;
+    public void setOpponent(String opponent) {
+        this.opponent = opponent;
     }
 
-    public int[][] getFirstMatrix() {
-        return firstMatrix;
+    public int[][] getPlayerMatrix() {
+        return playerMatrix;
     }
 
-    public void setFirstMatrix(int[][] firstMatrix) {
-        this.firstMatrix = firstMatrix;
+    public void setPlayerMatrix(int[][] playerMatrix) {
+        this.playerMatrix = playerMatrix;
     }
 
-    public int[][] getSecondMatrix() {
-        return secondMatrix;
+    public int[][] getOpponentMatrix() {
+        return opponentMatrix;
     }
 
-    public void setSecondMatrix(int[][] secondMatrix) {
-        this.secondMatrix = secondMatrix;
+    public void setOpponentMatrix(int[][] opponentMatrix) {
+        this.opponentMatrix = opponentMatrix;
     }
 
     public int[][] getTarget() {
@@ -57,11 +57,11 @@ public class ServerSnap {
         this.gameOver = gameOver;
     }
 
-    public String getWinner() {
-        return winner;
+    public boolean isWin() {
+        return win;
     }
 
-    public void setWinner(String winner) {
-        this.winner = winner;
+    public void setWin(boolean win) {
+        this.win = win;
     }
 }

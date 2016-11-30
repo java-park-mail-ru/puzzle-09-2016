@@ -22,10 +22,10 @@ content:<br>
 Снимок сервера:<br>
 type: "ServerSnap"<br>
 content:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;String firstPlayer;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;String secondPlayer;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;int[][] firstMatrix;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;int[][] secondMatrix;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;String player;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;String opponent;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;int[][] playerMatrix;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;int[][] opponentMatrix;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;int[][] target;<br>
 &nbsp;&nbsp;&nbsp;&nbsp;boolean gameOver;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;String winner;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;boolean win;<br>

@@ -9,8 +9,6 @@ import ru.mail.park.websocket.Message;
 import ru.mail.park.websocket.RemotePointService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class ServerSnapService {
@@ -22,34 +20,39 @@ public class ServerSnapService {
         this.remotePointService = remotePointService;
     }
 
-    public void sendSnapForSession(GameSession session) {
-        sendSnap(session, false, null);
+    public void sendSnapsForSession(GameSession session) {
+        sendSnapsForSession(session, false, null);
     }
 
-    public void sendGameOverSnap(GameSession session, Player winner) {
-        sendSnap(session, true, winner.getUser().getLogin());
+    public void sendGameOverSnaps(GameSession session, Player winner) {
+        sendSnapsForSession(session, true, winner.getUser().getLogin());
     }
 
     @SuppressWarnings("OverlyBroadCatchBlock")
-    private void sendSnap(GameSession session, boolean gameOver, String winner) {
-        final ServerSnap snap = new ServerSnap();
-        snap.setFirstPlayer(session.getFirst().getUser().getLogin());
-        snap.setSecondPlayer(session.getSecond().getUser().getLogin());
-        snap.setFirstMatrix(session.getFirst().getSquare().getMatrix());
-        snap.setSecondMatrix(session.getSecond().getSquare().getMatrix());
-        snap.setTarget(session.getTarget().getMatrix());
-        snap.setGameOver(gameOver);
-        snap.setWinner(winner);
-        final List<Player> players = new ArrayList<>();
-        players.add(session.getFirst());
-        players.add(session.getSecond());
+    private void sendSnapsForSession(GameSession session, boolean gameOver, String winner) {
+        final Player first = session.getFirst();
+        final Player second = session.getSecond();
         try {
-            final Message message = new Message(ServerSnap.class.getName(), objectMapper.writeValueAsString(snap));
-            for (Player player : players) {
-                remotePointService.sendMessageToUser(player.getUser(), message);
-            }
+            remotePointService.sendMessageToUser(first.getUser(), new Message(ServerSnap.class.getName(),
+                    objectMapper.writeValueAsString(createSnapForPlayer(first, session, gameOver, winner))));
+            remotePointService.sendMessageToUser(second.getUser(), new Message(ServerSnap.class.getName(),
+                    objectMapper.writeValueAsString(createSnapForPlayer(second, session, gameOver, winner))));
         } catch (IOException e) {
             throw new RuntimeException("Failed sending snapshot", e);
         }
+    }
+
+    private ServerSnap createSnapForPlayer(Player player, GameSession session, boolean gameOver, String winner) {
+        final ServerSnap snap = new ServerSnap();
+        snap.setPlayer(player.getUser().getLogin());
+        snap.setOpponent(session.getOpponent(player).getUser().getLogin());
+        snap.setPlayerMatrix(player.getSquare().getMatrix());
+        snap.setOpponentMatrix(session.getOpponent(player).getSquare().getMatrix());
+        snap.setTarget(session.getTarget().getMatrix());
+        snap.setGameOver(gameOver);
+        if (gameOver) {
+            snap.setWin(player.getUser().getLogin().equals(winner));
+        }
+        return snap;
     }
 }

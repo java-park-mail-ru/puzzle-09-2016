@@ -36,4 +36,14 @@ public class GameSession {
         }
         return null;
     }
+
+    public Player getOpponent(Player player) {
+        if (player.equals(first)) {
+            return second;
+        }
+        if (player.equals(second)) {
+            return first;
+        }
+        return null;
+    }
 }

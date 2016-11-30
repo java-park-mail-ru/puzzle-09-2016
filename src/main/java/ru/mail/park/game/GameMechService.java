@@ -74,7 +74,7 @@ public class GameMechService {
                     endGame(session, winner);
                     iterator.remove();
                 } else {
-                    serverSnapService.sendSnapForSession(session);
+                    serverSnapService.sendSnapsForSession(session);
                 }
             } catch (RuntimeException e) {
                 logger.error("Sending snapshots failed, terminating the session", e);
@@ -87,14 +87,13 @@ public class GameMechService {
 
     @Transactional
     private void endGame(GameSession session, Player winner) {
-        final Player loser = winner.equals(session.getFirst()) ? session.getSecond() : session.getFirst();
         final UserProfile winnerProfile = winner.getUser();
-        final UserProfile loserProfile = loser.getUser();
+        final UserProfile loserProfile = session.getOpponent(winner).getUser();
         winnerProfile.setRank(winnerProfile.getRank() + WIN_RANK_GAIN);
         loserProfile.setRank(loserProfile.getRank() - WIN_RANK_GAIN);
         accountService.updateUser(winnerProfile);
         accountService.updateUser(loserProfile);
-        serverSnapService.sendGameOverSnap(session, winner);
+        serverSnapService.sendGameOverSnaps(session, winner);
         terminateSession(session, CloseStatus.NORMAL);
     }
 
