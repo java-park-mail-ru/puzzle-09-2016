@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.CloseStatus;
 import ru.mail.park.game.mechanics.GameSession;
 import ru.mail.park.game.mechanics.Player;
@@ -85,14 +84,15 @@ public class GameMechService {
         startGames();
     }
 
-    @Transactional
     private void endGame(GameSession session, Player winner) {
         final UserProfile winnerProfile = winner.getUser();
         final UserProfile loserProfile = session.getOpponent(winner).getUser();
         winnerProfile.setRank(winnerProfile.getRank() + WIN_RANK_GAIN);
         loserProfile.setRank(loserProfile.getRank() - WIN_RANK_GAIN);
-        accountService.updateUser(winnerProfile);
-        accountService.updateUser(loserProfile);
+        final List<UserProfile> userProfiles = new ArrayList<>();
+        userProfiles.add(winnerProfile);
+        userProfiles.add(loserProfile);
+        accountService.updateUsers(userProfiles);
         serverSnapService.sendGameOverSnaps(session, winner);
         terminateSession(session, CloseStatus.NORMAL);
     }
@@ -105,23 +105,13 @@ public class GameMechService {
     }
 
     private void startGames() {
-        final List<UserProfile> list = new ArrayList<>();
-        while (!queue.isEmpty()) {
-            final UserProfile userProfile = queue.poll();
-            if (isConnected(userProfile)) {
-                list.add(userProfile);
-            }
-        }
-        if (list.size() % 2 == 1) {
-            final int lastIndex = list.size() - 1;
-            final UserProfile last = list.get(lastIndex);
-            list.remove(lastIndex);
-            queue.add(last);
-        }
-        players.addAll(list);
-        for (int i = 0; i < list.size(); i += 2) {
-            final GameSession session = new GameSession(new Player(list.get(i)), new Player(list.get(i + 1)));
-            gameSessions.add(session);
+        queue.removeIf(userProfile -> !isConnected(userProfile));
+        while (queue.size() >= 2) {
+            final UserProfile first = queue.poll();
+            final UserProfile second = queue.poll();
+            players.add(first);
+            players.add(second);
+            gameSessions.add(new GameSession(new Player(first), new Player(second)));
         }
     }
 

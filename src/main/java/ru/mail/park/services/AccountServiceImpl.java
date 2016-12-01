@@ -2,6 +2,7 @@ package ru.mail.park.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.mail.park.model.UserDao;
 import ru.mail.park.model.UserDaoImpl;
 import ru.mail.park.model.UserProfile;
@@ -35,5 +36,13 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void updateUser(UserProfile userProfile) {
         userDao.update(userProfile);
+    }
+
+    @Transactional
+    @Override
+    public void updateUsers(List<UserProfile> userProfiles) {
+        for (UserProfile userProfile : userProfiles) {
+            userDao.update(userProfile);
+        }
     }
 }
