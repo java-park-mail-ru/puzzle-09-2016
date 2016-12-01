@@ -29,7 +29,7 @@ public class GameMechService {
     private AccountService accountService;
     private Queue<UserProfile> queue = new ConcurrentLinkedQueue<>();
     private Set<UserProfile> players = new ConcurrentHashSet<>();
-    private Set<GameSession> gameSessions = new ConcurrentHashSet<>();
+    private Set<GameSession> gameSessions = new HashSet<>();
 
     @Autowired
     public GameMechService(RemotePointService remotePointService, PlayerActionService playerActionService,
