@@ -12,6 +12,5 @@ public interface AccountService {
     UserProfile getUserByLogin(String login);
     List<UserProfile> getTopRanked(int limit);
     void updateUser(UserProfile userProfile);
-    @Transactional
     void updateUsers(List<UserProfile> userProfiles);
 }
