@@ -12,17 +12,15 @@ public class Square {
         initMatrix();
     }
 
-    public int[][] getMatrix() {
-        return matrix;
+    public Square(int scramble) {
+        initMatrix();
+        for (int i = 0; i < scramble; i++) {
+            activate((int) (Math.random() * SIZE), (int) (Math.random() * SIZE), 2, 1);
+        }
     }
 
-    public void initMatrix() {
-        matrix = new int[SIZE][SIZE];
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                matrix[i][j] = MIN_VALUE;
-            }
-        }
+    public int[][] getMatrix() {
+        return matrix;
     }
 
     public void activate(int row, int col, int targetDiff, int neighbourDiff) {
@@ -37,6 +35,15 @@ public class Square {
         add(row + 1, col + 1, neighbourDiff);
     }
 
+    private void initMatrix() {
+        matrix = new int[SIZE][SIZE];
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                matrix[i][j] = MIN_VALUE;
+            }
+        }
+    }
+
     private void add(int row, int col, int value) {
         try {
             matrix[row][col] += value;
@@ -46,13 +53,6 @@ public class Square {
                 matrix[row][col] = MIN_VALUE;
             }
         } catch (IndexOutOfBoundsException ignore) {
-        }
-    }
-
-    public void scramble(int moves) {
-        initMatrix();
-        for (int i = 0; i < moves; i++) {
-            activate((int) (Math.random() * SIZE), (int) (Math.random() * SIZE), 2, 1);
         }
     }
 

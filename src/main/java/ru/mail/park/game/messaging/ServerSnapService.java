@@ -20,30 +20,24 @@ public class ServerSnapService {
         this.remotePointService = remotePointService;
     }
 
-    public void sendSnapsForSession(GameSession session) {
+    public void sendSnapsForSession(GameSession session) throws IOException {
         sendSnapsForSession(session, false, null);
     }
 
-    public void sendGameOverSnaps(GameSession session, Player winner) {
+    public void sendGameOverSnaps(GameSession session, Player winner) throws IOException {
         sendSnapsForSession(session, true, winner.getUser().getLogin());
     }
 
-    @SuppressWarnings("OverlyBroadCatchBlock")
-    private void sendSnapsForSession(GameSession session, boolean gameOver, String winner) {
+    @SuppressWarnings("OverlyBroadThrowsClause")
+    private void sendSnapsForSession(GameSession session, boolean gameOver, String winner) throws IOException {
         final Player first = session.getFirst();
         final Player second = session.getSecond();
         final ServerSnap firstSnap = createSnapForPlayer(first, session, gameOver, winner);
         final ServerSnap secondSnap = createSnapForPlayer(second, session, gameOver, winner);
-        try {
-            final Message firstMessage = new Message(ServerSnap.class.getName(),
-                    objectMapper.writeValueAsString(firstSnap));
-            final Message secondMessage = new Message(ServerSnap.class.getName(),
-                    objectMapper.writeValueAsString(secondSnap));
-            remotePointService.sendMessageToUser(first.getUser(), firstMessage);
-            remotePointService.sendMessageToUser(second.getUser(), secondMessage);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed sending snapshot", e);
-        }
+        final Message firstMsg = new Message(ServerSnap.class.getName(), objectMapper.writeValueAsString(firstSnap));
+        final Message secondMsg = new Message(ServerSnap.class.getName(), objectMapper.writeValueAsString(secondSnap));
+        remotePointService.sendMessageToUser(first.getUser(), firstMsg);
+        remotePointService.sendMessageToUser(second.getUser(), secondMsg);
     }
 
     private ServerSnap createSnapForPlayer(Player player, GameSession session, boolean gameOver, String winner) {
