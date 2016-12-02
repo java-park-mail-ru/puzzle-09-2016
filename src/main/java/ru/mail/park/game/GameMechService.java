@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Service
 public class GameMechService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private static final int WIN_RANK_GAIN = 25;
+    private static final int RANK_BOUNTY = GameSettings.getRankBounty();
     private RemotePointService remotePointService;
     private ServerSnapService serverSnapService;
     private AccountService accountService;
@@ -84,8 +84,8 @@ public class GameMechService {
     private void endGame(GameSession session, Player winner) {
         final UserProfile winnerProfile = winner.getUser();
         final UserProfile loserProfile = session.getOpponent(winner).getUser();
-        winnerProfile.setRank(winnerProfile.getRank() + WIN_RANK_GAIN);
-        loserProfile.setRank(loserProfile.getRank() - WIN_RANK_GAIN);
+        winnerProfile.setRank(winnerProfile.getRank() + RANK_BOUNTY);
+        loserProfile.setRank(loserProfile.getRank() - RANK_BOUNTY);
         final List<UserProfile> userProfiles = new ArrayList<>();
         userProfiles.add(winnerProfile);
         userProfiles.add(loserProfile);

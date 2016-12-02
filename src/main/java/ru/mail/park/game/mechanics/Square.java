@@ -1,11 +1,13 @@
 package ru.mail.park.game.mechanics;
 
+import ru.mail.park.game.config.GameSettings;
+
 import java.util.Arrays;
 
 public class Square {
-    public static final int SIZE = 8;
-    public static final int MIN_VALUE = 1;
-    public static final int MAX_VALUE = 9;
+    private static final int SIZE = GameSettings.getSquareSize();
+    private static final int MIN_VALUE = GameSettings.getSquareMinValue();
+    private static final int MAX_VALUE = GameSettings.getSquareMaxValue();
     private int[][] matrix;
 
     public Square() {

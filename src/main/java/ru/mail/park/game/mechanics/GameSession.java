@@ -1,9 +1,11 @@
 package ru.mail.park.game.mechanics;
 
+import ru.mail.park.game.config.GameSettings;
 import ru.mail.park.game.messaging.PlayerAction;
 import ru.mail.park.model.UserProfile;
 
 public class GameSession {
+    private static final int TARGET_SCRAMBLE = GameSettings.getTargetScramble();
     private Player first;
     private Player second;
     private Square target;
@@ -11,7 +13,7 @@ public class GameSession {
     public GameSession(Player first, Player second) {
         this.first = first;
         this.second = second;
-        target = new Square(8);
+        target = new Square(TARGET_SCRAMBLE);
     }
 
     public Player getFirst() {
