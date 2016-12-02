@@ -61,7 +61,14 @@ public class GameMechService {
             final UserProfile second = queue.poll();
             players.add(first);
             players.add(second);
-            gameSessions.add(new GameSession(new Player(first), new Player(second)));
+            final GameSession session = new GameSession(new Player(first), new Player(second));
+            gameSessions.add(session);
+            try {
+                serverSnapService.sendSnapsForSession(session);
+            } catch (IOException e) {
+                logger.error("failed to send initial snaps", e);
+                terminateSession(session, CloseStatus.NORMAL);
+            }
         }
     }
 
