@@ -31,7 +31,6 @@ public class GameMechService {
     private ServerSnapService serverSnapService;
     private AccountService accountService;
     private Queue<UserProfile> queue = new ConcurrentLinkedQueue<>();
-    private Set<UserProfile> players = new ConcurrentHashSet<>();
     private Set<GameSession> gameSessions = new ConcurrentHashSet<>();
 
     @Autowired
@@ -43,7 +42,7 @@ public class GameMechService {
     }
 
     public void addPlayer(UserProfile userProfile) {
-        if (!queue.contains(userProfile) && !players.contains(userProfile)) {
+        if (!queue.contains(userProfile) && gameSessions.stream().noneMatch(session -> session.contains(userProfile))) {
             queue.add(userProfile);
             startGames();
         }
@@ -59,8 +58,6 @@ public class GameMechService {
         while (queue.size() >= 2) {
             final UserProfile first = queue.poll();
             final UserProfile second = queue.poll();
-            players.add(first);
-            players.add(second);
             final GameSession session = new GameSession(new Player(first), new Player(second));
             gameSessions.add(session);
             try {
@@ -112,7 +109,5 @@ public class GameMechService {
     private void terminateSession(GameSession session, CloseStatus closeStatus) {
         remotePointService.cutDownConnection(session.getFirst().getUser(), closeStatus);
         remotePointService.cutDownConnection(session.getSecond().getUser(), closeStatus);
-        players.remove(session.getFirst().getUser());
-        players.remove(session.getSecond().getUser());
     }
 }
