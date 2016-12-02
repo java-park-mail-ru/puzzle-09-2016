@@ -1,6 +1,8 @@
 package ru.mail.park.game.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.mail.park.game.mechanics.GameSession;
@@ -12,6 +14,7 @@ import java.io.IOException;
 
 @Service
 public class ServerSnapService {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private RemotePointService remotePointService;
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -36,8 +39,22 @@ public class ServerSnapService {
         final ServerSnap secondSnap = createSnapForPlayer(second, session, gameOver, winner);
         final Message firstMsg = new Message(ServerSnap.class.getName(), objectMapper.writeValueAsString(firstSnap));
         final Message secondMsg = new Message(ServerSnap.class.getName(), objectMapper.writeValueAsString(secondSnap));
-        remotePointService.sendMessageToUser(first.getUser(), firstMsg);
-        remotePointService.sendMessageToUser(second.getUser(), secondMsg);
+        IOException exception = null;
+        try {
+            remotePointService.sendMessageToUser(first.getUser(), firstMsg);
+        } catch (IOException e) {
+            logger.error("failed to send server snap to user " + first.getUser().getLogin(), e);
+            exception = e;
+        }
+        try {
+            remotePointService.sendMessageToUser(second.getUser(), secondMsg);
+        } catch (IOException e) {
+            logger.error("failed to send server snap to user " + second.getUser().getLogin(), e);
+            exception = e;
+        }
+        if (exception != null) {
+            throw exception;
+        }
     }
 
     private ServerSnap createSnapForPlayer(Player player, GameSession session, boolean gameOver, String winner) {
