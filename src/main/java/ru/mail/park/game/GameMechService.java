@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
+import ru.mail.park.game.config.GameSettings;
 import ru.mail.park.game.mechanics.GameSession;
 import ru.mail.park.game.mechanics.Player;
 import ru.mail.park.game.messaging.PlayerAction;
@@ -39,17 +40,13 @@ public class GameMechService {
     }
 
     public void addPlayer(UserProfile userProfile) {
-        if (queue.contains(userProfile)) {
-            return;
+        if (!queue.contains(userProfile) && !players.contains(userProfile)) {
+            queue.add(userProfile);
+            startGames();
         }
-        queue.add(userProfile);
-        startGames();
     }
 
     public void addPlayerAction(UserProfile userProfile, PlayerAction action) {
-        if (!players.contains(userProfile)) {
-            return;
-        }
         gameSessions.stream().filter(session -> session.contains(userProfile)).findAny().
                 ifPresent(session -> processAction(action, userProfile, session));
     }
