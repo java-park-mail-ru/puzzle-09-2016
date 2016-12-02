@@ -1,5 +1,6 @@
 package ru.mail.park.websocket;
 
+@SuppressWarnings("unused")
 public class Message {
     private String type;
     private String content;
