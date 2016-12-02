@@ -32,11 +32,15 @@ public class ServerSnapService {
     private void sendSnapsForSession(GameSession session, boolean gameOver, String winner) {
         final Player first = session.getFirst();
         final Player second = session.getSecond();
+        final ServerSnap firstSnap = createSnapForPlayer(first, session, gameOver, winner);
+        final ServerSnap secondSnap = createSnapForPlayer(second, session, gameOver, winner);
         try {
-            remotePointService.sendMessageToUser(first.getUser(), new Message(ServerSnap.class.getName(),
-                    objectMapper.writeValueAsString(createSnapForPlayer(first, session, gameOver, winner))));
-            remotePointService.sendMessageToUser(second.getUser(), new Message(ServerSnap.class.getName(),
-                    objectMapper.writeValueAsString(createSnapForPlayer(second, session, gameOver, winner))));
+            final Message firstMessage = new Message(ServerSnap.class.getName(),
+                    objectMapper.writeValueAsString(firstSnap));
+            final Message secondMessage = new Message(ServerSnap.class.getName(),
+                    objectMapper.writeValueAsString(secondSnap));
+            remotePointService.sendMessageToUser(first.getUser(), firstMessage);
+            remotePointService.sendMessageToUser(second.getUser(), secondMessage);
         } catch (IOException e) {
             throw new RuntimeException("Failed sending snapshot", e);
         }
