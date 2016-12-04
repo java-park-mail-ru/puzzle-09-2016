@@ -16,7 +16,7 @@ public class MessageHandlerService {
     public void handle(Message message, UserProfile userProfile) throws HandleException {
         final Class clazz;
         try {
-            clazz = Class.forName(message.getType());
+            clazz = Class.forName("ru.mail.park.game.messaging." + message.getType());
         } catch (ClassNotFoundException e) {
             throw new HandleException("Can't handle message of " + message.getType() + " type", e);
         }

@@ -37,8 +37,10 @@ public class ServerSnapService {
         final Player second = session.getSecond();
         final ServerSnap firstSnap = createSnapForPlayer(first, session, gameOver, winner);
         final ServerSnap secondSnap = createSnapForPlayer(second, session, gameOver, winner);
-        final Message firstMsg = new Message(ServerSnap.class.getName(), objectMapper.writeValueAsString(firstSnap));
-        final Message secondMsg = new Message(ServerSnap.class.getName(), objectMapper.writeValueAsString(secondSnap));
+        final Message firstMsg = new Message(ServerSnap.class.getSimpleName(),
+                objectMapper.writeValueAsString(firstSnap));
+        final Message secondMsg = new Message(ServerSnap.class.getSimpleName(),
+                objectMapper.writeValueAsString(secondSnap));
         IOException exception = null;
         try {
             remotePointService.sendMessageToUser(first.getUser(), firstMsg);
