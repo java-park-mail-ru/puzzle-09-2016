@@ -55,6 +55,19 @@ public class GameMechService {
         }
     }
 
+    public void handleDisconnect(UserProfile userProfile) {
+        final GameSession session = sessions.get(userProfile);
+        if (session == null) {
+            return;
+        }
+        final Player opponent = session.getOpponent(session.getPlayer(userProfile));
+        if (isConnected(opponent.getUser())) {
+            endGame(session, opponent);
+        } else {
+            terminateSession(session, CloseStatus.NORMAL);
+        }
+    }
+
     private void startGames() {
         queue.removeIf(userProfile -> !isConnected(userProfile));
         while (queue.size() >= 2) {
@@ -114,18 +127,5 @@ public class GameMechService {
         sessions.remove(session.getSecond().getUser());
         remotePointService.cutDownConnection(session.getFirst().getUser(), closeStatus);
         remotePointService.cutDownConnection(session.getSecond().getUser(), closeStatus);
-    }
-
-    public void handleDisconnect(UserProfile userProfile) {
-        final GameSession session = sessions.get(userProfile);
-        if (session == null) {
-            return;
-        }
-        final Player opponent = session.getOpponent(session.getPlayer(userProfile));
-        if (isConnected(opponent.getUser())) {
-            endGame(session, opponent);
-        } else {
-            terminateSession(session, CloseStatus.NORMAL);
-        }
     }
 }
