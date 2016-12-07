@@ -7,6 +7,7 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import ru.mail.park.game.GameMechService;
 import ru.mail.park.model.UserProfile;
 import ru.mail.park.services.AccountService;
 
@@ -19,12 +20,14 @@ public class GameSocketHandler extends TextWebSocketHandler {
     private AccountService accountService;
     private RemotePointService remotePointService;
     private MessageHandlerService messageHandlerService;
+    private GameMechService gameMechService;
 
     public GameSocketHandler(AccountService accountService, RemotePointService remotePointService,
-                             MessageHandlerService messageHandlerService) {
+                             MessageHandlerService messageHandlerService, GameMechService gameMechService) {
         this.accountService = accountService;
         this.remotePointService = remotePointService;
         this.messageHandlerService = messageHandlerService;
+        this.gameMechService = gameMechService;
     }
 
     @Override
@@ -44,7 +47,9 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws AuthenticationException {
-        remotePointService.removeUser(getUserFromSession(session));
+        final UserProfile userProfile = getUserFromSession(session);
+        gameMechService.handleDisconnect(userProfile);
+        remotePointService.removeUser(userProfile);
     }
 
     @Override

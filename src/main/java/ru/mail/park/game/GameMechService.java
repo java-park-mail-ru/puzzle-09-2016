@@ -1,6 +1,5 @@
 package ru.mail.park.game;
 
-import org.eclipse.jetty.util.ConcurrentHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +15,8 @@ import ru.mail.park.services.AccountService;
 import ru.mail.park.websocket.RemotePointService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 
@@ -31,7 +28,7 @@ public class GameMechService {
     private ServerSnapService serverSnapService;
     private AccountService accountService;
     private Queue<UserProfile> queue = new ConcurrentLinkedQueue<>();
-    private Set<GameSession> gameSessions = new ConcurrentHashSet<>();
+    private Map<UserProfile, GameSession> sessions = new ConcurrentHashMap<>();
 
     @Autowired
     public GameMechService(RemotePointService remotePointService,ServerSnapService serverSnapService,
@@ -42,15 +39,17 @@ public class GameMechService {
     }
 
     public void addPlayer(UserProfile userProfile) {
-        if (!queue.contains(userProfile) && gameSessions.stream().noneMatch(session -> session.contains(userProfile))) {
+        if (!queue.contains(userProfile) && !sessions.containsKey(userProfile)) {
             queue.add(userProfile);
             startGames();
         }
     }
 
     public void addPlayerAction(UserProfile userProfile, PlayerAction action) {
-        gameSessions.stream().filter(session -> session.contains(userProfile)).findAny().
-                ifPresent(session -> processAction(action, userProfile, session));
+        final GameSession session = sessions.get(userProfile);
+        if (session != null) {
+            processAction(action, userProfile, session);
+        }
     }
 
     private void startGames() {
@@ -59,7 +58,8 @@ public class GameMechService {
             final UserProfile first = queue.poll();
             final UserProfile second = queue.poll();
             final GameSession session = new GameSession(new Player(first), new Player(second));
-            gameSessions.add(session);
+            sessions.put(first, session);
+            sessions.put(second, session);
             try {
                 serverSnapService.sendSnapsForSession(session);
             } catch (IOException e) {
@@ -107,7 +107,22 @@ public class GameMechService {
     }
 
     private void terminateSession(GameSession session, CloseStatus closeStatus) {
+        sessions.remove(session.getFirst().getUser());
+        sessions.remove(session.getSecond().getUser());
         remotePointService.cutDownConnection(session.getFirst().getUser(), closeStatus);
         remotePointService.cutDownConnection(session.getSecond().getUser(), closeStatus);
+    }
+
+    public void handleDisconnect(UserProfile userProfile) {
+        final GameSession session = sessions.get(userProfile);
+        if (session == null) {
+            return;
+        }
+        final Player opponent = session.getOpponent(session.getPlayer(userProfile));
+        if (isConnected(opponent.getUser())) {
+            endGame(session, opponent);
+        } else {
+            terminateSession(session, CloseStatus.NORMAL);
+        }
     }
 }
