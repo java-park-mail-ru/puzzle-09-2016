@@ -25,16 +25,16 @@ public class Square {
         return matrix;
     }
 
-    public void activate(int row, int col, int targetDiff, int neighbourDiff) {
+    public void activate(int row, int col, int targetDiff, int adjacentDiff) {
         add(row, col, targetDiff);
-        add(row - 1, col - 1, neighbourDiff);
-        add(row - 1, col, neighbourDiff);
-        add(row - 1, col + 1, neighbourDiff);
-        add(row, col - 1, neighbourDiff);
-        add(row, col + 1, neighbourDiff);
-        add(row + 1, col - 1, neighbourDiff);
-        add(row + 1, col, neighbourDiff);
-        add(row + 1, col + 1, neighbourDiff);
+        add(row - 1, col - 1, adjacentDiff);
+        add(row - 1, col, adjacentDiff);
+        add(row - 1, col + 1, adjacentDiff);
+        add(row, col - 1, adjacentDiff);
+        add(row, col + 1, adjacentDiff);
+        add(row + 1, col - 1, adjacentDiff);
+        add(row + 1, col, adjacentDiff);
+        add(row + 1, col + 1, adjacentDiff);
     }
 
     private void initMatrix() {
