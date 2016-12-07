@@ -29,6 +29,30 @@ public class GameSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws AuthenticationException {
+        remotePointService.registerUser(getUserFromSession(session), session);
+    }
+
+    @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws AuthenticationException {
+        handleMessage(getUserFromSession(session), message);
+    }
+
+    @Override
+    public void handleTransportError(WebSocketSession session, Throwable throwable) throws Exception {
+        logger.debug("Websocket transport problem", throwable);
+    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws AuthenticationException {
+        remotePointService.removeUser(getUserFromSession(session));
+    }
+
+    @Override
+    public boolean supportsPartialMessages() {
+        return false;
+    }
+
+    private UserProfile getUserFromSession(WebSocketSession session) throws AuthenticationException {
         final Object sessionLogin = session.getAttributes().get("login");
         if (sessionLogin == null) {
             throw new AuthenticationException("Only authenticated users are allowed to play the game");
@@ -37,20 +61,7 @@ public class GameSocketHandler extends TextWebSocketHandler {
         if (userProfile == null) {
             throw new AuthenticationException("Only authenticated users are allowed to play the game");
         }
-        remotePointService.registerUser(userProfile, session);
-    }
-
-    @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws AuthenticationException {
-        final Object httpSessionLogin = session.getAttributes().get("login");
-        if (httpSessionLogin == null) {
-            throw new AuthenticationException("Only authenticated users are allowed to play the game");
-        }
-        final UserProfile userProfile = accountService.getUserByLogin(httpSessionLogin.toString());
-        if (userProfile == null) {
-            throw new AuthenticationException("Only authenticated users are allowed to play the game");
-        }
-        handleMessage(userProfile, message);
+        return userProfile;
     }
 
     @SuppressWarnings("OverlyBroadCatchBlock")
@@ -68,28 +79,5 @@ public class GameSocketHandler extends TextWebSocketHandler {
             logger.error("Can't handle message of type " + message.getType() + " with content: " + message.getContent(),
                     e);
         }
-    }
-
-    @Override
-    public void handleTransportError(WebSocketSession session, Throwable throwable) throws Exception {
-        logger.warn("Websocket transport problem", throwable);
-    }
-
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws AuthenticationException {
-        final Object httpSessionLogin = session.getAttributes().get("login");
-        if (httpSessionLogin == null) {
-            throw new AuthenticationException("Only authenticated users are allowed to play the game");
-        }
-        final UserProfile userProfile = accountService.getUserByLogin(httpSessionLogin.toString());
-        if (userProfile == null) {
-            throw new AuthenticationException("Only authenticated users are allowed to play the game");
-        }
-        remotePointService.removeUser(userProfile);
-    }
-
-    @Override
-    public boolean supportsPartialMessages() {
-        return false;
     }
 }

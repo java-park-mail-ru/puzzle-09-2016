@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.mail.park.game.mechanics.GameSession;
 import ru.mail.park.game.mechanics.Player;
+import ru.mail.park.model.UserProfile;
 import ru.mail.park.websocket.Message;
 import ru.mail.park.websocket.RemotePointService;
 
@@ -33,27 +34,18 @@ public class ServerSnapService {
     }
 
     @SuppressWarnings("OverlyBroadThrowsClause")
-    private void sendSnapsForSession(GameSession session, boolean gameOver, @Nullable String winner)
-            throws IOException {
-        final Player first = session.getFirst();
-        final Player second = session.getSecond();
-        final ServerSnap firstSnap = createSnapForPlayer(first, session, gameOver, winner);
-        final ServerSnap secondSnap = createSnapForPlayer(second, session, gameOver, winner);
-        final Message firstMsg = new Message(ServerSnap.class.getSimpleName(),
-                objectMapper.writeValueAsString(firstSnap));
-        final Message secondMsg = new Message(ServerSnap.class.getSimpleName(),
-                objectMapper.writeValueAsString(secondSnap));
+    private void sendSnapsForSession(GameSession session, boolean gameOver, @Nullable String winner) throws IOException {
         IOException exception = null;
         try {
-            remotePointService.sendMessageToUser(first.getUser(), firstMsg);
+            sendSnapForUser(session.getFirst().getUser(), session, gameOver, winner);
         } catch (IOException e) {
-            logger.error("failed to send server snap to user " + first.getUser().getLogin(), e);
+            logger.error("failed to send server snap to user " + session.getFirst().getUser().getLogin(), e);
             exception = e;
         }
         try {
-            remotePointService.sendMessageToUser(second.getUser(), secondMsg);
+            sendSnapForUser(session.getSecond().getUser(), session, gameOver, winner);
         } catch (IOException e) {
-            logger.error("failed to send server snap to user " + second.getUser().getLogin(), e);
+            logger.error("failed to send server snap to user " + session.getSecond().getUser().getLogin(), e);
             exception = e;
         }
         if (exception != null) {
@@ -61,8 +53,15 @@ public class ServerSnapService {
         }
     }
 
-    private ServerSnap createSnapForPlayer(Player player, GameSession session, boolean gameOver,
-                                           @Nullable String winner) {
+    @SuppressWarnings("OverlyBroadThrowsClause")
+    private void sendSnapForUser(UserProfile user, GameSession session, boolean gameOver, @Nullable String winner)
+            throws IOException{
+        final ServerSnap snap = createSnapForPlayer(session.getPlayer(user), session, gameOver, winner);
+        final Message message = new Message(ServerSnap.class.getSimpleName(), objectMapper.writeValueAsString(snap));
+        remotePointService.sendMessageToUser(user, message);
+    }
+
+    private ServerSnap createSnapForPlayer(Player player, GameSession session, boolean gameOver, @Nullable String winner) {
         final ServerSnap snap = new ServerSnap();
         snap.setPlayer(player.getUser().getLogin());
         snap.setOpponent(session.getOpponent(player).getUser().getLogin());
