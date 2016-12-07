@@ -55,16 +55,19 @@ public class GameMechService {
         }
     }
 
+    @SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
     public void handleDisconnect(UserProfile userProfile) {
         final GameSession session = sessions.get(userProfile);
         if (session == null) {
             return;
         }
-        final Player opponent = session.getOpponent(session.getPlayer(userProfile));
-        if (isConnected(opponent.getUser())) {
-            endGame(session, opponent);
-        } else {
-            terminateSession(session, CloseStatus.NORMAL);
+        synchronized (session) {
+            final Player opponent = session.getOpponent(session.getPlayer(userProfile));
+            if (isConnected(opponent.getUser())) {
+                endGame(session, opponent);
+            } else {
+                terminateSession(session, CloseStatus.NORMAL);
+            }
         }
     }
 
