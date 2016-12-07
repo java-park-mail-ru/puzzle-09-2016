@@ -85,17 +85,20 @@ public class GameMechService {
         }
     }
 
+    @SuppressWarnings("SynchronizationOnLocalVariableOrMethodParameter")
     private void processAction(PlayerAction action, UserProfile userProfile, GameSession session) {
-        final Player player = session.getPlayer(userProfile);
-        session.processAction(player, action);
-        if (session.isWinner(player)) {
-            endGame(session, player);
-        } else {
-            try {
-                serverSnapService.sendSnapsForSession(session);
-            } catch (IOException e) {
-                logger.error("failed to send server snaps", e);
-                terminateSession(session, CloseStatus.NORMAL);
+        synchronized (session) {
+            final Player player = session.getPlayer(userProfile);
+            session.processAction(player, action);
+            if (session.isWinner(player)) {
+                endGame(session, player);
+            } else {
+                try {
+                    serverSnapService.sendSnapsForSession(session);
+                } catch (IOException e) {
+                    logger.error("failed to send server snaps", e);
+                    terminateSession(session, CloseStatus.NORMAL);
+                }
             }
         }
     }
