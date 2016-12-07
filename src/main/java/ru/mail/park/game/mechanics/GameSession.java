@@ -48,10 +48,6 @@ public class GameSession {
         return null;
     }
 
-    public boolean contains(UserProfile userProfile) {
-        return getPlayer(userProfile) != null;
-    }
-
     public void processAction(Player player, PlayerAction action) {
         if (action.isPositive()) {
             player.getSquare().activate(action.getRow(), action.getCol(), 2, 1);
