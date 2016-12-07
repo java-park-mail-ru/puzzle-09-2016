@@ -72,7 +72,7 @@ public class GameMechService {
     private void processAction(PlayerAction action, UserProfile userProfile, GameSession session) {
         final Player player = session.getPlayer(userProfile);
         session.processAction(player, action);
-        if (session.isWinner(player) || !isConnected(session.getOpponent(player).getUser())) {
+        if (session.isWinner(player)) {
             endGame(session, player);
         } else {
             try {
