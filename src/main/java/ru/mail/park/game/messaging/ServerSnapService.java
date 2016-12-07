@@ -1,6 +1,7 @@
 package ru.mail.park.game.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,8 @@ public class ServerSnapService {
     }
 
     @SuppressWarnings("OverlyBroadThrowsClause")
-    private void sendSnapsForSession(GameSession session, boolean gameOver, String winner) throws IOException {
+    private void sendSnapsForSession(GameSession session, boolean gameOver, @Nullable String winner)
+            throws IOException {
         final Player first = session.getFirst();
         final Player second = session.getSecond();
         final ServerSnap firstSnap = createSnapForPlayer(first, session, gameOver, winner);
@@ -59,7 +61,8 @@ public class ServerSnapService {
         }
     }
 
-    private ServerSnap createSnapForPlayer(Player player, GameSession session, boolean gameOver, String winner) {
+    private ServerSnap createSnapForPlayer(Player player, GameSession session, boolean gameOver,
+                                           @Nullable String winner) {
         final ServerSnap snap = new ServerSnap();
         snap.setPlayer(player.getUser().getLogin());
         snap.setOpponent(session.getOpponent(player).getUser().getLogin());
