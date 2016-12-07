@@ -46,15 +46,15 @@ public class Square {
         }
     }
 
+    @SuppressWarnings("OverlyComplexBooleanExpression")
     private void add(int row, int col, int value) {
-        try {
+        if (row >= 0 && col >= 0 && row < SIZE && col < SIZE) {
             matrix[row][col] += value;
             if (matrix[row][col] > MAX_VALUE) {
                 matrix[row][col] = MAX_VALUE;
             } else if (matrix[row][col] < MIN_VALUE) {
                 matrix[row][col] = MIN_VALUE;
             }
-        } catch (IndexOutOfBoundsException ignore) {
         }
     }
 
