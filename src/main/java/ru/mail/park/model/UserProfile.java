@@ -38,4 +38,25 @@ public class UserProfile implements BaseDaoEntity {
     public void setRank(int rank) {
         this.rank = rank;
     }
+
+    @SuppressWarnings("all")
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final UserProfile userProfile = (UserProfile) o;
+        if (rank != userProfile.rank) return false;
+        if (!login.equals(userProfile.login)) return false;
+        if (!email.equals(userProfile.email)) return false;
+        return password.equals(userProfile.password);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = login.hashCode();
+        result = 31 * result + email.hashCode();
+        result = 31 * result + password.hashCode();
+        result = 31 * result + rank;
+        return result;
+    }
 }

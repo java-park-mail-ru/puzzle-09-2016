@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.mail.park.model.UserProfile;
 import ru.mail.park.model.exception.UserAlreadyExistsException;
 import ru.mail.park.services.AccountService;
+import ru.mail.park.services.SecurityService;
 
 import javax.servlet.http.HttpSession;
 
@@ -14,10 +15,12 @@ import javax.servlet.http.HttpSession;
 @RestController
 public class RegistrationController {
     private final AccountService accountService;
+    private final SecurityService securityService;
 
     @Autowired
-    public RegistrationController(AccountService accountService) {
+    public RegistrationController(AccountService accountService, SecurityService securityService) {
         this.accountService = accountService;
+        this.securityService = securityService;
     }
 
     @RequestMapping(path = "/api/user", method = RequestMethod.POST)
@@ -29,7 +32,7 @@ public class RegistrationController {
             return ApiResponse.parameterMissing();
         }
         try {
-            accountService.addUser(login, password, email);
+            accountService.addUser(login, securityService.encode(password), email);
         } catch (UserAlreadyExistsException e) {
             return ApiResponse.duplicateUser();
         }
@@ -44,7 +47,7 @@ public class RegistrationController {
             return ApiResponse.parameterMissing();
         }
         final UserProfile user = accountService.getUserByLogin(login);
-        if (user == null || !user.getPassword().equals(password)) {
+        if (user == null || !securityService.matches(password, user.getPassword())) {
             return ApiResponse.authError();
         }
         httpSession.setAttribute("login", login);

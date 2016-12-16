@@ -1,0 +1,1 @@
+ALTER TABLE user_profile MODIFY COLUMN passwd VARCHAR(80);
